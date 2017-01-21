@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"os/user"
 	"runtime"
 	"time"
@@ -24,6 +25,7 @@ var (
 var (
 	username = flag.String("username", "", "The boardgamegeek.com username used to log into the site")
 	password = flag.String("password", "", "The boardgamegeek.com password associated with the given username")
+	version  = flag.Bool("version", false, "Print the executable version to the screen")
 )
 
 var (
@@ -46,6 +48,10 @@ func init() {
 
 func main() {
 	iniflags.Parse()
+	if *version {
+		fmt.Println(VERSION)
+		os.Exit(0)
+	}
 	for *username == "" || *password == "" {
 		getUsername()
 		if *username == "" {
