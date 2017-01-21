@@ -4,20 +4,19 @@ import (
 	"github.com/yhat/scrape"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
-	"log"
 	"net/http"
 	"strings"
 )
 
-func getMicroBadges(client *http.Client) {
+func getMicroBadges(client *http.Client) error {
 	resp, err := client.Get("https://boardgamegeek.com/user/" + *username + "/microbadges")
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	root, err := html.Parse(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	profileTitleBlocks := scrape.FindAllNested(root, scrape.ByClass("profile_title"))
@@ -28,7 +27,7 @@ func getMicroBadges(client *http.Client) {
 	}
 
 	microBadgeMap = tmpMicroBadgeMap
-
+	return nil
 }
 
 func parseMicroBadgeData(node *html.Node) {

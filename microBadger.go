@@ -57,27 +57,69 @@ func main() {
 	var client *http.Client
 	for {
 		var err error
-		client, err = website.Login("https://boardgamegeek.com/login", *username, *password)
+		client, err = website.Login("https://boardgamegeek.com/login", *username, *password, 30*time.Second)
+
+		if err != nil {
+			fmt.Println("BGG currently unavailable")
+		} else {
+			break
+		}
+		//		time.Sleep(10 * time.Second)
+		time.Sleep(10 * time.Minute)
+	}
+
+	//	client = logIntoBGG()
+	//	loggedIn := true
+	for {
+		// if !loggedIn {
+		// 	client = logIntoBGG()
+		// }
+		fmt.Print("Attempting to randomize badges: ")
+		err := getMicroBadges(client)
+		if err != nil {
+			fmt.Println("Failed")
+			fmt.Println(err.Error())
+			time.Sleep(10 * time.Second)
+			continue
+		}
+		badgeList := getRandomBadges(5)
+
+		updateSuccess := make([]bool, len(badgeList))
+		for i, v := range badgeList {
+			err = assignSlot(v.Id, fmt.Sprintf("%d", i+1), client)
+			if err != nil {
+				// fmt.Println("Error assigning slot ", i+1, ": ", err.Error())
+				updateSuccess[i] = false
+				//	loggedIn = false
+			} else {
+				updateSuccess[i] = true
+			}
+
+		}
+		fmt.Println()
+		fmt.Print("Slots ")
+		for i, v := range updateSuccess {
+			if v {
+				fmt.Printf("%d ", i+1)
+			}
+		}
+		fmt.Println("updated successfully")
+		time.Sleep(1 * time.Minute)
+		//		time.Sleep(10 * time.Second)
+	}
+}
+
+func logIntoBGG() (client *http.Client) {
+	for {
+		var err error
+		client, err = website.Login("https://boardgamegeek.com/login", *username, *password, 30*time.Second)
 
 		if err != nil {
 			fmt.Println("BGG currently unavailable")
 			//			log.Fatal(err)
 		} else {
-			break
+			return
 		}
-		time.Sleep(10 * time.Minute)
-	}
-	for {
-		fmt.Println("Randomizing badges")
-		getMicroBadges(client)
-		badgeList := getRandomBadges(5)
-		for i, v := range badgeList {
-			err := assignSlot(v.Id, fmt.Sprintf("%d", i+1), client)
-			if err != nil {
-				fmt.Println("Error assigning slot: ", err.Error())
-			}
-		}
-		//		time.Sleep(1 * time.Minute)
 		time.Sleep(10 * time.Second)
 	}
 }
