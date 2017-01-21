@@ -6,6 +6,7 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 	"os"
 	"strings"
+	"syscall"
 )
 
 func getUsername() {
@@ -16,7 +17,7 @@ func getUsername() {
 		return
 	}
 	fmt.Print("Password: ")
-	providedPassword, err := terminal.ReadPassword(0)
+	providedPassword, err := terminal.ReadPassword(int(syscall.Stdin))
 	if err != nil {
 		return
 	}

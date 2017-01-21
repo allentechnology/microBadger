@@ -56,8 +56,10 @@ func main() {
 		getUsername()
 		if *username == "" {
 			fmt.Println("Invalid username")
+			continue
 		} else if *password == "" {
 			fmt.Println("Invalid password")
+			continue
 		}
 	}
 	var client *http.Client
@@ -104,12 +106,18 @@ func main() {
 		}
 		fmt.Println()
 		fmt.Print("Slots ")
+		slotUpdated := false
 		for i, v := range updateSuccess {
 			if v {
 				fmt.Printf("%d ", i+1)
+				slotUpdated = true
 			}
 		}
-		fmt.Println("updated successfully")
+		if slotUpdated {
+			fmt.Println("updated successfully")
+		} else {
+			fmt.Println("not updated")
+		}
 		time.Sleep(1 * time.Minute)
 		//		time.Sleep(10 * time.Second)
 	}
