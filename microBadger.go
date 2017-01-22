@@ -17,7 +17,7 @@ import (
 )
 
 var (
-	slotMap          = map[int]slot{}
+	slotMap          = map[string]slot{}
 	microBadgeMap    = map[string]*microBadge{}
 	tmpMicroBadgeMap = map[string]*microBadge{}
 )
@@ -26,7 +26,7 @@ var (
 	username = flag.String("username", "", "The boardgamegeek.com username used to log into the site")
 	password = flag.String("password", "", "The boardgamegeek.com password associated with the given username")
 	version  = flag.Bool("version", false, "Print the executable version to the screen")
-	interval = flag.Int("interval", 5, "The interval between randomizations in minutes")
+	interval = flag.Int("interval", 1, "The interval between randomizations in minutes")
 )
 
 var (
@@ -77,7 +77,8 @@ func main() {
 		} else {
 			break
 		}
-		time.Sleep(time.Duration(*interval) * time.Minute)
+		time.Sleep(10 * time.Minute)
+
 	}
 
 	//	client = logIntoBGG()
@@ -86,6 +87,7 @@ func main() {
 		// if !loggedIn {
 		// 	client = logIntoBGG()
 		// }
+
 		fmt.Print(time.Now().Format("2006-01-02 15:04:05 "))
 		fmt.Print("Attempting to randomize badges: ")
 		err := getMicroBadges(client)
@@ -123,8 +125,7 @@ func main() {
 		} else {
 			fmt.Println("not updated")
 		}
-		time.Sleep(1 * time.Minute)
-		//		time.Sleep(10 * time.Second)
+		time.Sleep(time.Duration(*interval) * time.Minute)
 	}
 }
 
@@ -158,10 +159,10 @@ func getRandomBadges(numBadges int) []microBadge {
 	return badgeList
 }
 
-func assignSlot(id, slot string, client *http.Client) error {
+func assignSlot(id, slotNumber string, client *http.Client) error {
 	resp, err := client.PostForm("https://boardgamegeek.com/geekmicrobadge.php", url.Values{
 		"badgeid": {id},
-		"slot":    {slot},
+		"slot":    {slotNumber},
 		"ajax":    {"1"},
 		"action":  {"setslot"},
 	})
@@ -176,6 +177,11 @@ func assignSlot(id, slot string, client *http.Client) error {
 	//Response if not logged in is 85 bytes long
 	if len(data) < 86 {
 		return errors.New("Invalid username or password. Restart microBadger and attempt to log in again.")
+	}
+	if givenSlot, ok := slotMap[slotNumber]; ok {
+		givenSlot.AssignedBadge = id
+	} else {
+		slotMap[slotNumber] = slot{Id: slotNumber, AssignedBadge: id}
 	}
 	return nil
 }

@@ -5,9 +5,9 @@ import (
 )
 
 type slot struct {
-	Id              int
-	AssignedBadge   microBadge
-	AvailableBadges map[int]microBadge
+	Id              string
+	AssignedBadge   string
+	AvailableBadges map[int]*microBadge
 }
 
 type microBadge struct {
