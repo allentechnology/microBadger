@@ -21,7 +21,7 @@ func getUsername() {
 	if err != nil {
 		return
 	}
-	*username = strings.Trim(string(providedUsername), "\n")
-	*password = strings.Trim(string(providedPassword), "\n")
+	*username = strings.Trim(string(providedUsername), "\n\r")
+	*password = strings.Trim(string(providedPassword), "\n\r")
 	fmt.Println()
 }

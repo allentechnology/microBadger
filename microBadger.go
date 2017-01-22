@@ -26,6 +26,7 @@ var (
 	username = flag.String("username", "", "The boardgamegeek.com username used to log into the site")
 	password = flag.String("password", "", "The boardgamegeek.com password associated with the given username")
 	version  = flag.Bool("version", false, "Print the executable version to the screen")
+	interval = flag.Int("interval", 5, "The interval between randomizations in minutes")
 )
 
 var (
@@ -68,12 +69,15 @@ func main() {
 		client, err = website.Login("https://boardgamegeek.com/login", *username, *password, 30*time.Second)
 
 		if err != nil {
-			fmt.Println("BGG currently unavailable")
+			fmt.Println(err.Error())
+			if err.Error() == "Login failed" {
+				fmt.Println("Exiting microBadger")
+				os.Exit(1)
+			}
 		} else {
 			break
 		}
-		//		time.Sleep(10 * time.Second)
-		time.Sleep(10 * time.Minute)
+		time.Sleep(time.Duration(*interval) * time.Minute)
 	}
 
 	//	client = logIntoBGG()
@@ -82,6 +86,7 @@ func main() {
 		// if !loggedIn {
 		// 	client = logIntoBGG()
 		// }
+		fmt.Print(time.Now().Format("2006-01-02 15:04:05 "))
 		fmt.Print("Attempting to randomize badges: ")
 		err := getMicroBadges(client)
 		if err != nil {
