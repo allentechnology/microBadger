@@ -53,6 +53,11 @@ func main() {
 		fmt.Println(VERSION)
 		os.Exit(0)
 	}
+
+	//Web server here
+	http.HandleFunc("/", webHandler)
+	http.ListenAndServe(":8080", nil)
+
 	for *username == "" || *password == "" {
 		getUsername()
 		if *username == "" {
@@ -127,6 +132,10 @@ func main() {
 		}
 		time.Sleep(time.Duration(*interval) * time.Minute)
 	}
+}
+
+func webHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, htmlPage)
 }
 
 func logIntoBGG() (client *http.Client) {
