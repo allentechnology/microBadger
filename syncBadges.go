@@ -27,6 +27,11 @@ func getMicroBadges(client *http.Client) error {
 	}
 
 	microBadgeMap = tmpMicroBadgeMap
+	categoryMap = make(map[string][]*microBadge)
+	for _, v := range microBadgeMap {
+		categoryMap[v.Category] = append(categoryMap[v.Category], v)
+	}
+
 	return nil
 }
 
@@ -80,6 +85,7 @@ func getBadgesInCategory(category string, node *html.Node) {
 				mbDescription := v.Val
 				mbDescription = strings.TrimPrefix(mbDescription, "return overlib('")
 				mbDescription = strings.TrimSuffix(mbDescription, "', WRAP );")
+				mbDescription = strings.Replace(mbDescription, "\\'", "'", -1)
 
 				mb := mbImg.Parent.Attr[0].Val
 				if strings.Contains(mb, "/microbadge/") {
