@@ -19,10 +19,15 @@ import (
 )
 
 var (
-	slotMap          = map[string]slot{}
+	slotMap          = map[string]*slot{}
 	categoryMap      = map[string][]*microBadge{}
 	microBadgeMap    = map[string]*microBadge{}
 	tmpMicroBadgeMap = map[string]*microBadge{}
+	client           *http.Client
+)
+
+var (
+	loginReady = make(chan bool)
 )
 
 var (
@@ -76,34 +81,9 @@ func main() {
 	if err != nil {
 		fmt.Println("Failed to open browser. Navigate to http://localhost/ on your preferred web browser.")
 	}
-	time.Sleep(1 * time.Second)
-	for *username == "" || *password == "" {
-		getUsername()
-		if *username == "" {
-			fmt.Println("Invalid username")
-			continue
-		} else if *password == "" {
-			fmt.Println("Invalid password")
-			continue
-		}
-	}
-	var client *http.Client
-	for {
-		var err error
-		client, err = website.Login("https://boardgamegeek.com/login", *username, *password, 30*time.Second)
-
-		if err != nil {
-			fmt.Println(err.Error())
-			if err.Error() == "Login failed" {
-				fmt.Println("Exiting microBadger")
-				os.Exit(1)
-			}
-		} else {
-			break
-		}
-		time.Sleep(10 * time.Minute)
-
-	}
+	fmt.Println("MicroBadger version ", VERSION)
+	fmt.Println("To use microBadger, navigate to http://localhost:6060 in any web browser.")
+	<-loginReady
 
 	//	client = logIntoBGG()
 	//	loggedIn := true
@@ -121,8 +101,8 @@ func main() {
 			time.Sleep(10 * time.Second)
 			continue
 		}
-		badgeList := getRandomBadges(5)
-
+		badgeList := getRandomBadges()
+		fmt.Println(badgeList)
 		updateSuccess := make([]bool, len(badgeList))
 		for i, v := range badgeList {
 			err = assignSlot(v.Id, fmt.Sprintf("%d", i+1), client)
@@ -155,8 +135,11 @@ func main() {
 
 func webServer() {
 	//Web server here
+
+	http.HandleFunc("/slot/", slotHandler)
+	http.HandleFunc("/slotSubmit", slotSubmitHandler)
+	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/", rootHandler)
-	http.HandleFunc("/test", testHandler)
 	serverErr := http.ListenAndServe(":6060", nil)
 
 	if serverErr != nil {
@@ -177,8 +160,72 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func testHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "%s", r.URL.Path[1:])
+func slotSubmitHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	formSlots := make(map[string][]string)
+	formSlots["1"] = r.Form["slot1"]
+	formSlots["2"] = r.Form["slot2"]
+	formSlots["3"] = r.Form["slot3"]
+	formSlots["4"] = r.Form["slot4"]
+	formSlots["5"] = r.Form["slot5"]
+
+	for i := 1; i < 6; i++ {
+		if s, ok := slotMap[string(i)]; ok {
+			s.AvailableBadges = map[string]*microBadge{}
+			for _, v := range formSlots[string(i)] {
+				if mb, ok := microBadgeMap[v]; ok {
+					s.AvailableBadges[v] = mb
+				}
+			}
+		} else {
+			slotMap[string(i)] = &slot{}
+			for _, v := range formSlots[string(i)] {
+				if mb, ok := microBadgeMap[v]; ok {
+					slotMap[string(i)].AvailableBadges[v] = mb
+				}
+			}
+
+		}
+	}
+}
+
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	usernameSlice := r.Form["username"]
+	passwordSlice := r.Form["password"]
+	if len(usernameSlice) < 1 || len(passwordSlice) < 1 {
+		//Print error to notification area
+		return
+	}
+	*username = usernameSlice[0]
+	*password = passwordSlice[0]
+
+	for {
+		var err error
+		client, err = website.Login("https://boardgamegeek.com/login", *username, *password, 30*time.Second)
+
+		if err != nil {
+			fmt.Println(err.Error())
+			if err.Error() == "Login failed" {
+				fmt.Println("Exiting microBadger")
+				os.Exit(1)
+			}
+		} else {
+			break
+		}
+		time.Sleep(10 * time.Minute)
+
+	}
+
+	loginReady <- true
+}
+
+func slotHandler(w http.ResponseWriter, r *http.Request) {
+	slotNumber := r.URL.Path[6:]
+	if mb, ok := microBadgeMap[slotMap[string(slotNumber)].AssignedBadge]; ok {
+		fmt.Fprintf(w, "<html><head><meta http-equiv='refresh' content='0; url=http:%s' /></head></html>", mb.ImgURL)
+	}
+
 }
 
 func logIntoBGG() (client *http.Client) {
@@ -196,18 +243,19 @@ func logIntoBGG() (client *http.Client) {
 	}
 }
 
-func getRandomBadges(numBadges int) []microBadge {
-	i := 0
+func getRandomBadges() []microBadge {
+
 	badgeList := []microBadge{}
-	for _, v := range microBadgeMap {
-		if v.Category != "Contest (Official)" {
-			badgeList = append(badgeList, *v)
-			i++
-		}
-		if i >= numBadges {
-			break
+	for i := 1; i < 6; i++ {
+		if currentSlot, ok := slotMap[string(i)]; ok {
+			fmt.Println(i, currentSlot.AvailableBadges)
+			for _, mb := range currentSlot.AvailableBadges {
+				badgeList = append(badgeList, *mb)
+				break
+			}
 		}
 	}
+
 	return badgeList
 }
 
@@ -233,7 +281,7 @@ func assignSlot(id, slotNumber string, client *http.Client) error {
 	if givenSlot, ok := slotMap[slotNumber]; ok {
 		givenSlot.AssignedBadge = id
 	} else {
-		slotMap[slotNumber] = slot{Id: slotNumber, AssignedBadge: id}
+		slotMap[slotNumber] = &slot{Id: slotNumber, AssignedBadge: id}
 	}
 	return nil
 }

@@ -7,7 +7,7 @@ import (
 type slot struct {
 	Id              string
 	AssignedBadge   string
-	AvailableBadges map[int]*microBadge
+	AvailableBadges map[string]*microBadge
 }
 
 type microBadge struct {
