@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 )
 
 type slot struct {
@@ -24,4 +25,22 @@ func (mb *microBadge) String() string {
 
 func (mb *microBadge) SetImg(img string) {
 	mb.ImgURL = img
+}
+
+type ByDescription []*microBadge
+
+func (mb ByDescription) Len() int {
+	return len(mb)
+}
+
+func (mb ByDescription) Swap(i, j int) {
+	mb[i], mb[j] = mb[j], mb[i]
+}
+
+func (mb ByDescription) Less(i, j int) bool {
+	return mb[i].Description < mb[j].Description
+}
+
+func mbSort(mb []*microBadge) {
+	sort.Sort(ByDescription(mb))
 }
