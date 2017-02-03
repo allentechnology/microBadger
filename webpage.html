@@ -169,19 +169,22 @@
     <body>
 	<h1>MicroBadger</h1>
 	<div id="menu">
-	    <button type="button">Help</button>
-	    <button type="button" id="quit-button" title="">Quit</button>
+	    <form>
+		<!-- <button type="button">Help</button> -->
+	    <button type="submit" id="quit-button" title="Quit microBadger and stop randomizing microbadges" formaction="/quit">Quit</button>
+	    </form>
 	</div>
 	<br />
 	<div>
 	    <form action="/login" method="post" id="login-form">
 		Username: 
-		<input type="text" name="username" autofocus/>
+		<input type="text" name="username" title="boardgamegeek.com username" autofocus/>
 		<br />
 		Password: 
-		<input type="password" name="password" id="password-field"/>
+		<input type="password" name="password" title="boardgamegeek.com password" id="password-field"/>
 		<br />
-		<button type="button" onClick="login()" id="login-button">Save Login</button>
+		<!-- <button type="button" onClick="login()" id="login-button" title="Save the login information locally for future use">Save Login</button> -->
+		<button type="button" onClick="login()" id="login-button" title="Log into boardgamegeek.com and start randomizing microbadges">Login</button>
 		<script>
 		 $(document).ready(function(){
 		     $('#password-field').keypress(function(e){
@@ -230,7 +233,7 @@
 	      				<!--   <input type="checkbox" id="slot-1-select-all" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-1-select-all">Select All</label> -->
 					{{range $key,$value := .}} 
 					<ul>
-	      				    <input type="checkbox" id="slot-1-{{$key}}" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-1-{{$key}}">{{$key}}</label>
+	      				    <input type="checkbox" id="slot-1-{{$key}}" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-1-{{$key}}" style="font-size: 20"><b>{{$key}}</b></label>
 					    <ul>
 						{{range $mb := $value}}
 						<li>
@@ -251,7 +254,7 @@
 	      				<!-- <input type="checkbox" id="slot-2-select-all" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-2-select-all">Select All</label> -->
 					{{range $key,$value := .}} 
 					<ul>
-	      				    <input type="checkbox" id="slot-2-{{$key}}" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-2-{{$key}}">{{$key}}</label>
+	      				    <input type="checkbox" id="slot-2-{{$key}}" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-2-{{$key}}" style="font-size: 20"><b>{{$key}}</b></label>
 					    <ul>
 						{{range $mb := $value}}
 						<li>
@@ -273,7 +276,7 @@
 	      				<!-- <input type="checkbox" id="slot-3-select-all" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-3-select-all">Select All</label> -->
 					{{range $key,$value := .}} 
 					<ul>
-	      				    <input type="checkbox" id="slot-3-{{$key}}" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-3-{{$key}}">{{$key}}</label>
+	      				    <input type="checkbox" id="slot-3-{{$key}}" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-3-{{$key}}" style="font-size: 20"><b>{{$key}}</b></label>
 					    <ul>
 						{{range $mb := $value}}
 						<li>
@@ -294,7 +297,7 @@
 	      				<!-- <input type="checkbox" id="slot-4-select-all" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-4-select-all">Select All</label> -->
 					{{range $key,$value := .}} 
 					<ul>
-	      				    <input type="checkbox" id="slot-4-{{$key}}" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-4-{{$key}}">{{$key}}</label>
+	      				    <input type="checkbox" id="slot-4-{{$key}}" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-4-{{$key}}" style="font-size: 20"><b>{{$key}}</b></label>
 					    <ul>
 						{{range $mb := $value}}
 						<li>
@@ -315,7 +318,7 @@
 	      				<!-- <input type="checkbox" id="slot-5-select-all" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-5-select-all">Select All</label> -->
 					{{range $key,$value := .}} 
 					<ul>
-	      				    <input type="checkbox" id="slot-5-{{$key}}" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-5-{{$key}}">{{$key}}</label>
+	      				    <input type="checkbox" id="slot-5-{{$key}}" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-5-{{$key}}" style="font-size: 20"><b>{{$key}}</b></label>
 					    <ul>
 						{{range $mb := $value}}
 						<li>

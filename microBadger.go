@@ -147,6 +147,7 @@ func webServer() {
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/setInterval", setIntervalHandler)
 	http.HandleFunc("/randomize", randomizeHandler)
+	http.HandleFunc("/quit", quitHandler)
 	//	http.HandleFunc("/test", testHandler)
 	serverErr := http.ListenAndServe(":6060", nil)
 
@@ -154,6 +155,14 @@ func webServer() {
 		os.Exit(0)
 	}
 
+}
+
+func quitHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "<html><body><h3>Exiting microBadger</h3><p>Thank you for using this application</p></body></html>")
+	go func() {
+		time.Sleep(5 * time.Second)
+		os.Exit(0)
+	}()
 }
 
 func randomizeHandler(w http.ResponseWriter, r *http.Request) {
@@ -285,6 +294,8 @@ func getRandomBadges() []microBadge {
 				badgeList = append(badgeList, *mb)
 				break
 			}
+		} else {
+			badgeList = append(badgeList, microBadge{})
 		}
 	}
 
