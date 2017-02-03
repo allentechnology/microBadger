@@ -140,6 +140,18 @@
 	</style>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script>
+	 function subForm (postUrl, formID, message){
+	     $.ajax({
+		 url:"" + postUrl,
+		 type:'post',
+		 data:$("#" + formID).serialize(),
+		 success:function(){
+		     alert("" + message);
+		 }
+	     });
+	 }
+
+	 
 	 $(".acidjs-css3-treeview").delegate("label input:checkbox", "change", function() {
 	     var
 	     checkbox = $(this),
@@ -201,7 +213,7 @@
 	</div>
 	<div id="slots">
 	    <table>
-		<form action="/test" method="get" id="slot-submit-form">
+		<form action="/slotSubmit" method="post" id="slot-submit-form">
 		    <tr>
 			<th>Slot 1</th>
 			<th>Slot 2</th>
@@ -307,7 +319,7 @@
 					    <ul>
 						{{range $mb := $value}}
 						<li>
-	      					    <input type="checkbox" id="slot-5-{{$mb.Id}}" checked="checked" /><label><input type="checkbox" name="slot1" value="{{$mb.Id}}" /><span></span></label><label for="slot-5-{{$mb.Id}}"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
+	      					    <input type="checkbox" id="slot-5-{{$mb.Id}}" checked="checked" /><label><input type="checkbox" name="slot5" value="{{$mb.Id}}" /><span></span></label><label for="slot-5-{{$mb.Id}}"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
 						</li>
 						{{end}}
 					    </ul>
@@ -320,98 +332,130 @@
 		    </tr>
 		    <tr style="border: none;">
 			<td style="border: none;">
-			    <button type="button" onClick="SubForm()">Submit Slot Choices</button>
-			    <script>
-			     function SubForm (){
-				 $.ajax({
-				     url:'/slotSubmit',
-				     type:'post',
-				     data:$('#slot-submit-form').serialize(),
-				     success:function(){
-					 alert("Slot choices submitted");
-				     }
-				 });
-			     }
-			    </script>
+			    <button type="button" onClick="subSlotForm()">Submit Slot Choices</button>
 			    <!-- <input type="submit" value="Submit Slot Choices" /> -->
 			</td>
 			<td style="border: none;">
 			</td>
-			<td>
-			    <button type="button">Save as Preset:</button> 
-			    <input type="edit" />
-			</td>
+			<!-- <td>
+			     <button type="button">Save as Preset:</button> 
+			     <input type="edit" />
+			     </td> -->
 		    </tr>
 		</form>
-	    </table>
-	    <table>
-		<form>
-		    <tr>
-			<td>
-			    <h3>Preset Slot Configurations</h3>
-			</td>
-		    </tr>
-		    <tr>
-			<td>
-			    <div class="acidjs-css3-treeview">
-				<ul>
-				    <li>
-					<input type="checkbox" id="node-0" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="node-0">Select All</label>                  
-					<ul>
-					    <input type="checkbox" id="node-0" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="node-0">Preset 1 </label><button type="button">Edit</button>
-					    <ul>
-						<li>
-						    <label>badge 1</label>
-						</li>
-						<li>
-						    <label>badge 2</label>
-						</li>
-					    </ul>
-					    <input type="checkbox" id="node-0" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="node-0">Preset 2 </label><button type="button">Edit</button>
-					    <ul>
-						<li>
-						    <label>badge 3</label>
-						</li>
-						<li>
-						    <label>badge 4</label>
-						</li>
-					    </ul>
+		<script>
+		 function subSlotForm (){
+		     $.ajax({
+			 url:"/slotSubmit",
+			 type:'post',
+			 data:$("#slot-submit-form").serialize(),
+			 success:function(){
+			     alert("Slot choices submitted");
+			 }
+		     });
+		 }
 
-					</ul>
-				</ul>
-			    </div>
-			</td>
-		    </tr>
-		    <tr>
-			<td style="border: none;">
-			    <input type="submit" value="Load Selected Presets" />
-			</td>
-		    </tr>
+		</script>
+
 	    </table>
 	</div>
-	<br />
-	<br />
-	<br />
 
-	
-	<script>
-	</script>
+	<!-- <div>
+	     <table>
+	     <form>
+	     <tr>
+	     <td>
+	     <h3>Preset Slot Configurations</h3>
+	     </td>
+	     </tr>
+	     <tr>
+	     <td>
+	     <div class="acidjs-css3-treeview">
+	     <ul>
+	     <li>
+	     <input type="checkbox" id="node-0" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="node-0">Select All</label>                  
+	     <ul>
+	     <input type="checkbox" id="node-0" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="node-0">Preset 1 </label><button type="button">Edit</button>
+	     <ul>
+	     <li>
+	     <label>badge 1</label>
+	     </li>
+	     <li>
+	     <label>badge 2</label>
+	     </li>
+	     </ul>
+	     <input type="checkbox" id="node-0" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="node-0">Preset 2 </label><button type="button">Edit</button>
+	     <ul>
+	     <li>
+	     <label>badge 3</label>
+	     </li>
+	     <li>
+	     <label>badge 4</label>
+	     </li>
+	     </ul>
 
-	<div id="random-id">
-	    <form>
-		Randomization interval (minutes): 
-		<input type="number" min=1><br />
-		<input type="submit">
-	    </form>
-	</div>
+	     </ul>
+	     </ul>
+	     </div>
+	     </td>
+	     </tr>
+	     <tr>
+	     <td style="border: none;">
+	     <input type="submit" value="Load Selected Presets" />
+	     </td>
+	     </tr>
+	     </form>
+	     </table>
+	     </div>
+	   -->
 	<br />
 	<br />
 	<br />
 
 	<div>
-	    <form>
-		<input type="submit" value="Randomize now">
+	    <form action="/setInterval"  method="post" id="interval-form">
+		Randomization interval (minutes): 
+		<input type="number" name="interval" min=1 value="1"><br />
+		<button type="button" onClick="subIntervalForm()">Submit</button>
 	    </form>
+	    <script>
+	     function subIntervalForm (){
+		 $.ajax({
+		     url:"/setInterval",
+		     type:'post',
+		     data:$("#interval-form").serialize(),
+		     success:function(){
+			 alert("Interval set");
+		     }
+		 });
+	     }
+
+	    </script>
+
+	</div>
+	
+	<br />
+	<br />
+	<br />
+
+	<div>
+	    <form action="/randomize" method="post" id="random-form">
+		<button type="button" onClick="subRandomForm()" >Randomize now</button>
+	    </form>
+	    <script>
+	     function subRandomForm (){
+		 $.ajax({
+		     url:"/randomize",
+		     type:'post',
+		     data:$("#random-form").serialize(),
+		     success:function(){
+			 alert("Randomizing microbadges now");
+		     }
+		 });
+	     }
+
+	    </script>
+
 	</div>
 
     </body>

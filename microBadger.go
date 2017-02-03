@@ -15,6 +15,7 @@ import (
 	"os/exec"
 	"os/user"
 	"runtime"
+	"strconv"
 	"time"
 )
 
@@ -101,51 +102,81 @@ func main() {
 			time.Sleep(10 * time.Second)
 			continue
 		}
-		badgeList := getRandomBadges()
-		fmt.Println(badgeList)
-		updateSuccess := make([]bool, len(badgeList))
-		for i, v := range badgeList {
-			err = assignSlot(v.Id, fmt.Sprintf("%d", i+1), client)
-			if err != nil {
-				// fmt.Println("Error assigning slot ", i+1, ": ", err.Error())
-				updateSuccess[i] = false
-				//	loggedIn = false
-			} else {
-				updateSuccess[i] = true
-			}
-
-		}
-		fmt.Println()
-		fmt.Print("Slots ")
-		slotUpdated := false
-		for i, v := range updateSuccess {
-			if v {
-				fmt.Printf("%d ", i+1)
-				slotUpdated = true
-			}
-		}
-		if slotUpdated {
-			fmt.Println("updated successfully")
-		} else {
-			fmt.Println("not updated")
-		}
+		randomizeBadges()
 		time.Sleep(time.Duration(*interval) * time.Minute)
 	}
 }
 
+func randomizeBadges() {
+	badgeList := getRandomBadges()
+	updateSuccess := make([]bool, len(badgeList))
+	var err error
+	for i, v := range badgeList {
+		err = assignSlot(v.Id, fmt.Sprintf("%d", i+1), client)
+		if err != nil {
+			// fmt.Println("Error assigning slot ", i+1, ": ", err.Error())
+			updateSuccess[i] = false
+			//	loggedIn = false
+		} else {
+			updateSuccess[i] = true
+		}
+
+	}
+	fmt.Println()
+	fmt.Print("Slots ")
+	slotUpdated := false
+	for i, v := range updateSuccess {
+		if v {
+			fmt.Printf("%d ", i+1)
+			slotUpdated = true
+		}
+	}
+	if slotUpdated {
+		fmt.Println("updated successfully")
+	} else {
+		fmt.Println("not updated")
+	}
+
+}
+
 func webServer() {
 	//Web server here
-
+	http.HandleFunc("/", rootHandler)
 	http.HandleFunc("/slot/", slotHandler)
 	http.HandleFunc("/slotSubmit", slotSubmitHandler)
 	http.HandleFunc("/login", loginHandler)
-	http.HandleFunc("/", rootHandler)
+	http.HandleFunc("/setInterval", setIntervalHandler)
+	http.HandleFunc("/randomize", randomizeHandler)
+	//	http.HandleFunc("/test", testHandler)
 	serverErr := http.ListenAndServe(":6060", nil)
 
 	if serverErr != nil {
 		os.Exit(0)
 	}
 
+}
+
+func randomizeHandler(w http.ResponseWriter, r *http.Request) {
+	randomizeBadges()
+}
+
+func testHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("in test handler")
+	fmt.Fprintln(w, "in test handler")
+}
+
+func setIntervalHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	intervalSlice := r.Form["interval"]
+
+	if len(intervalSlice) > 0 {
+		formInterval, err := strconv.Atoi(intervalSlice[0])
+		if err != nil {
+			return
+		}
+		*interval = formInterval
+	}
+	return
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
@@ -168,20 +199,21 @@ func slotSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	formSlots["3"] = r.Form["slot3"]
 	formSlots["4"] = r.Form["slot4"]
 	formSlots["5"] = r.Form["slot5"]
-
 	for i := 1; i < 6; i++ {
-		if s, ok := slotMap[string(i)]; ok {
+		slotID := fmt.Sprintf("%d", i)
+		if s, ok := slotMap[slotID]; ok {
 			s.AvailableBadges = map[string]*microBadge{}
-			for _, v := range formSlots[string(i)] {
+			for _, v := range formSlots[slotID] {
 				if mb, ok := microBadgeMap[v]; ok {
 					s.AvailableBadges[v] = mb
 				}
 			}
 		} else {
-			slotMap[string(i)] = &slot{}
-			for _, v := range formSlots[string(i)] {
+			newMap := make(map[string]*microBadge)
+			slotMap[slotID] = &slot{Id: slotID, AvailableBadges: newMap}
+			for _, v := range formSlots[slotID] {
 				if mb, ok := microBadgeMap[v]; ok {
-					slotMap[string(i)].AvailableBadges[v] = mb
+					slotMap[slotID].AvailableBadges[v] = mb
 				}
 			}
 
@@ -247,8 +279,8 @@ func getRandomBadges() []microBadge {
 
 	badgeList := []microBadge{}
 	for i := 1; i < 6; i++ {
-		if currentSlot, ok := slotMap[string(i)]; ok {
-			fmt.Println(i, currentSlot.AvailableBadges)
+		slotID := fmt.Sprintf("%d", i)
+		if currentSlot, ok := slotMap[slotID]; ok {
 			for _, mb := range currentSlot.AvailableBadges {
 				badgeList = append(badgeList, *mb)
 				break
