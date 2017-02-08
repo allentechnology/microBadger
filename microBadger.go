@@ -23,7 +23,10 @@ import (
 type mbSlice []*microBadge
 
 func (m mbSlice) TrimWhiteSpace(text string) string {
-	return strings.Replace(text, " ", "-", -1)
+	newString := strings.Replace(text, " ", "-", -1)
+	newString = strings.Replace(newString, "(", "", -1)
+	newString = strings.Replace(newString, ")", "", -1)
+	return newString
 }
 
 var (
