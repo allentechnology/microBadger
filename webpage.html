@@ -151,18 +151,24 @@
 	     });
 	 }
 
+
+	 function checkSubBoxes(boxID, classID){
+	     $("." + classID).prop("checked",$("#" + boxID).is(":checked"));
+	     $("." + classID).change();
+	 }
+
 	 
-	 $(".acidjs-css3-treeview").delegate("label input:checkbox", "change", function() {
-	     var
-	     checkbox = $(this),
-	     nestedList = checkbox.parent().next().next(),
-	     selectNestedListCheckbox = nestedList.find("label:not([for]) input:checkbox");
-	     
-	     if(checkbox.is(":checked")) {
-		 return selectNestedListCheckbox.prop("checked", true);
-	     }
-	     selectNestedListCheckbox.prop("checked", false);
-	 });
+	 /* $(".acidjs-css3-treeview").delegate("label input:checkbox", "change", function() {
+	    var
+	    checkbox = $(this),
+	    nestedList = checkbox.parent().next().next(),
+	    selectNestedListCheckbox = nestedList.find("label:not([for]) input:checkbox");
+	    
+	    if(checkbox.is(":checked")) {
+	    return selectNestedListCheckbox.prop("checked", true);
+	    }
+	    selectNestedListCheckbox.prop("checked", false);
+	    });*/
 
 	</script>
     </head>
@@ -227,14 +233,14 @@
 			    <div class="acidjs-css3-treeview">
 				<ul>
 				    <li>
-	      				<!--   <input type="checkbox" id="slot-1-select-all" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-1-select-all">Select All</label> -->
+	      				<input type="checkbox" checked="checked" id="slot-1-select-all-arrow"/><label><input type="checkbox" id="slot-1-select-all" onChange="checkSubBoxes('slot-1-select-all','slot-1-category')"/><span></span></label><label for="slot-1-select-all-arrow">Select All</label> 
 					{{range $key,$value := .}} 
 					<ul>
-	      				    <input type="checkbox" id="slot-1-{{$key}}" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-1-{{$key}}">{{$key}}</label>
+	      				    <input type="checkbox" id="slot-1-{{.TrimWhiteSpace $key}}-arrow" checked="checked" /><label><input type="checkbox" id="slot-1-{{.TrimWhiteSpace $key}}" class="slot-1-category" onChange="checkSubBoxes('slot-1-{{.TrimWhiteSpace $key}}','slot-1-{{.TrimWhiteSpace $key}}-mb')"/><span></span></label><label for="slot-1-{{.TrimWhiteSpace $key}}-arrow">{{$key}}</label>
 					    <ul>
 						{{range $mb := $value}}
 						<li>
-	      					    <input type="checkbox" id="slot-1-{{$mb.Id}}" checked="checked" /><label><input type="checkbox" name="slot1" value="{{$mb.Id}}" /><span></span></label><label for="slot-1-{{$mb.Id}}"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
+	      					    <input type="checkbox" id="slot-1-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot1" value="{{$mb.Id}}" id="slot-1-{{$mb.Id}}" class="slot-1-{{$value.TrimWhiteSpace $key}}-mb" /><span></span></label><label for="slot-1-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
 						</li>
 						{{end}}
 					    </ul>

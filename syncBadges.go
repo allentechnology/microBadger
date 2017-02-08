@@ -27,7 +27,7 @@ func getMicroBadges(client *http.Client) error {
 	}
 
 	microBadgeMap = tmpMicroBadgeMap
-	categoryMap = make(map[string][]*microBadge)
+	categoryMap = make(map[string]mbSlice)
 	for _, v := range microBadgeMap {
 		categoryMap[v.Category] = append(categoryMap[v.Category], v)
 	}

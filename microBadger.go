@@ -16,12 +16,19 @@ import (
 	"os/user"
 	"runtime"
 	"strconv"
+	"strings"
 	"time"
 )
 
+type mbSlice []*microBadge
+
+func (m mbSlice) TrimWhiteSpace(text string) string {
+	return strings.Replace(text, " ", "-", -1)
+}
+
 var (
 	slotMap          = map[string]*slot{}
-	categoryMap      = map[string][]*microBadge{}
+	categoryMap      = map[string]mbSlice{}
 	microBadgeMap    = map[string]*microBadge{}
 	tmpMicroBadgeMap = map[string]*microBadge{}
 	client           *http.Client
