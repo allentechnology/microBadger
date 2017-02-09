@@ -150,7 +150,13 @@
 		 }
 	     });
 	 }
+	 function autoRefresh(id){
 
+	     setTimeout(function(){
+		 $('#' + id).load(document.URL +  ' #' + id);
+		 autoRefresh(id);
+	     }, 10000);
+	 }
 
 	 function checkSubBoxes(boxID, classID){
 	     $("." + classID).prop("checked",$("#" + boxID).is(":checked"));
@@ -206,6 +212,11 @@
 			     window.location.reload(false);
 			 }
 		     });
+		     autoRefresh('slot-1');
+		     autoRefresh('slot-2');
+		     autoRefresh('slot-3');
+		     autoRefresh('slot-4');
+		     autoRefresh('slot-5');
 		 }
 
 		</script>
@@ -229,8 +240,7 @@
 		    </tr>
 		    <tr>
 			<td>
-
-			    <div class="acidjs-css3-treeview">
+			    <div class="acidjs-css3-treeview" id="slot-1">
 				<ul>
 				    <li>
 	      				<input type="checkbox" checked="checked" id="slot-1-select-all-arrow"/><label><input type="checkbox" id="slot-1-select-all" onChange="checkSubBoxes('slot-1-select-all','slot-1-category')"/><span></span></label><label for="slot-1-select-all-arrow">Select All</label> 
@@ -250,18 +260,17 @@
 			    </div>
 			</td>
 			<td>
-
-			    <div class="acidjs-css3-treeview">
+			    <div class="acidjs-css3-treeview" id="slot-2">
 				<ul>
 				    <li>
-	      				<!-- <input type="checkbox" id="slot-2-select-all" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-2-select-all">Select All</label> -->
+	      				<input type="checkbox" checked="checked" id="slot-2-select-all-arrow"/><label><input type="checkbox" id="slot-2-select-all" onChange="checkSubBoxes('slot-2-select-all','slot-2-category')"/><span></span></label><label for="slot-2-select-all-arrow">Select All</label> 
 					{{range $key,$value := .}} 
 					<ul>
-	      				    <input type="checkbox" id="slot-2-{{$key}}" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-2-{{$key}}">{{$key}}</label>
+	      				    <input type="checkbox" id="slot-2-{{.TrimWhiteSpace $key}}-arrow" checked="checked" /><label><input type="checkbox" id="slot-2-{{.TrimWhiteSpace $key}}" class="slot-2-category" onChange="checkSubBoxes('slot-2-{{.TrimWhiteSpace $key}}','slot-2-{{.TrimWhiteSpace $key}}-mb')"/><span></span></label><label for="slot-2-{{.TrimWhiteSpace $key}}-arrow">{{$key}}</label>
 					    <ul>
 						{{range $mb := $value}}
 						<li>
-	      					    <input type="checkbox" id="slot-2-{{$mb.Id}}" checked="checked" /><label><input type="checkbox" name="slot2" value="{{$mb.Id}}" /><span></span></label><label for="slot-2-{{$mb.Id}}"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
+	      					    <input type="checkbox" id="slot-2-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot1" value="{{$mb.Id}}" id="slot-2-{{$mb.Id}}" class="slot-2-{{$value.TrimWhiteSpace $key}}-mb" /><span></span></label><label for="slot-2-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
 						</li>
 						{{end}}
 					    </ul>
@@ -269,21 +278,19 @@
 					{{end}}
 				</ul>
 			    </div>
-
 			</td>
 			<td>
-
-			    <div class="acidjs-css3-treeview">
+			    <div class="acidjs-css3-treeview" id="slot-3">
 				<ul>
 				    <li>
-	      				<!-- <input type="checkbox" id="slot-3-select-all" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-3-select-all">Select All</label> -->
+	      				<input type="checkbox" checked="checked" id="slot-3-select-all-arrow"/><label><input type="checkbox" id="slot-3-select-all" onChange="checkSubBoxes('slot-3-select-all','slot-3-category')"/><span></span></label><label for="slot-3-select-all-arrow">Select All</label> 
 					{{range $key,$value := .}} 
 					<ul>
-	      				    <input type="checkbox" id="slot-3-{{$key}}" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-3-{{$key}}">{{$key}}</label>
+	      				    <input type="checkbox" id="slot-3-{{.TrimWhiteSpace $key}}-arrow" checked="checked" /><label><input type="checkbox" id="slot-3-{{.TrimWhiteSpace $key}}" class="slot-3-category" onChange="checkSubBoxes('slot-3-{{.TrimWhiteSpace $key}}','slot-3-{{.TrimWhiteSpace $key}}-mb')"/><span></span></label><label for="slot-3-{{.TrimWhiteSpace $key}}-arrow">{{$key}}</label>
 					    <ul>
 						{{range $mb := $value}}
 						<li>
-	      					    <input type="checkbox" id="slot-3-{{$mb.Id}}" checked="checked" /><label><input type="checkbox" name="slot3" value="{{$mb.Id}}" /><span></span></label><label for="slot-3-{{$mb.Id}}"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
+	      					    <input type="checkbox" id="slot-3-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot1" value="{{$mb.Id}}" id="slot-3-{{$mb.Id}}" class="slot-3-{{$value.TrimWhiteSpace $key}}-mb" /><span></span></label><label for="slot-3-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
 						</li>
 						{{end}}
 					    </ul>
@@ -291,20 +298,19 @@
 					{{end}}
 				</ul>
 			    </div>
-
 			</td>
 			<td>
-			    <div class="acidjs-css3-treeview">
+			    <div class="acidjs-css3-treeview" id="slot-4">
 				<ul>
 				    <li>
-	      				<!-- <input type="checkbox" id="slot-4-select-all" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-4-select-all">Select All</label> -->
+	      				<input type="checkbox" checked="checked" id="slot-4-select-all-arrow"/><label><input type="checkbox" id="slot-4-select-all" onChange="checkSubBoxes('slot-4-select-all','slot-4-category')"/><span></span></label><label for="slot-4-select-all-arrow">Select All</label> 
 					{{range $key,$value := .}} 
 					<ul>
-	      				    <input type="checkbox" id="slot-4-{{$key}}" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-4-{{$key}}">{{$key}}</label>
+	      				    <input type="checkbox" id="slot-4-{{.TrimWhiteSpace $key}}-arrow" checked="checked" /><label><input type="checkbox" id="slot-4-{{.TrimWhiteSpace $key}}" class="slot-4-category" onChange="checkSubBoxes('slot-4-{{.TrimWhiteSpace $key}}','slot-4-{{.TrimWhiteSpace $key}}-mb')"/><span></span></label><label for="slot-4-{{.TrimWhiteSpace $key}}-arrow">{{$key}}</label>
 					    <ul>
 						{{range $mb := $value}}
 						<li>
-	      					    <input type="checkbox" id="slot-4-{{$mb.Id}}" checked="checked" /><label><input type="checkbox" name="slot4" value="{{$mb.Id}}" /><span></span></label><label for="slot-4-{{$mb.Id}}"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
+	      					    <input type="checkbox" id="slot-4-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot1" value="{{$mb.Id}}" id="slot-4-{{$mb.Id}}" class="slot-4-{{$value.TrimWhiteSpace $key}}-mb" /><span></span></label><label for="slot-4-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
 						</li>
 						{{end}}
 					    </ul>
@@ -312,20 +318,19 @@
 					{{end}}
 				</ul>
 			    </div>
-
 			</td>
 			<td>
-			    <div class="acidjs-css3-treeview">
+			    <div class="acidjs-css3-treeview" id="slot-5">
 				<ul>
 				    <li>
-	      				<!-- <input type="checkbox" id="slot-5-select-all" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-5-select-all">Select All</label> -->
+	      				<input type="checkbox" checked="checked" id="slot-5-select-all-arrow"/><label><input type="checkbox" id="slot-5-select-all" onChange="checkSubBoxes('slot-5-select-all','slot-5-category')"/><span></span></label><label for="slot-5-select-all-arrow">Select All</label> 
 					{{range $key,$value := .}} 
 					<ul>
-	      				    <input type="checkbox" id="slot-5-{{$key}}" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="slot-5-{{$key}}">{{$key}}</label>
+	      				    <input type="checkbox" id="slot-5-{{.TrimWhiteSpace $key}}-arrow" checked="checked" /><label><input type="checkbox" id="slot-5-{{.TrimWhiteSpace $key}}" class="slot-5-category" onChange="checkSubBoxes('slot-5-{{.TrimWhiteSpace $key}}','slot-5-{{.TrimWhiteSpace $key}}-mb')"/><span></span></label><label for="slot-5-{{.TrimWhiteSpace $key}}-arrow">{{$key}}</label>
 					    <ul>
 						{{range $mb := $value}}
 						<li>
-	      					    <input type="checkbox" id="slot-5-{{$mb.Id}}" checked="checked" /><label><input type="checkbox" name="slot5" value="{{$mb.Id}}" /><span></span></label><label for="slot-5-{{$mb.Id}}"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
+	      					    <input type="checkbox" id="slot-5-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot1" value="{{$mb.Id}}" id="slot-5-{{$mb.Id}}" class="slot-5-{{$value.TrimWhiteSpace $key}}-mb" /><span></span></label><label for="slot-5-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
 						</li>
 						{{end}}
 					    </ul>
@@ -333,8 +338,8 @@
 					{{end}}
 				</ul>
 			    </div>
-
 			</td>
+
 		    </tr>
 		    <tr style="border: none;">
 			<td style="border: none;">
