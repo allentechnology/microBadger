@@ -2,6 +2,13 @@
     <head>
 	<title>MicroBadger</title>
 	<style>
+	 #login-area {
+	     width: 500px;
+	     float: left;
+	 }
+	 #notification-area {
+	     margin-left: 500px;
+	 }
 	 table {
 	     width: 100%;
 	 }
@@ -150,6 +157,26 @@
 		 }
 	     });
 	 }
+	 function addContent(frm) {
+	     $.post(
+		 "/slotSubmit",
+		 $('#' + frm).serialize(),
+		 function (data) {
+                     result = data;
+		 }
+             )
+              .success(function() {
+		  alert("hello");
+              })
+              .complete(function() { 
+
+              })
+              .error(function() {
+		  alert('An error has occurred.');
+              });      
+
+	     return false;// this stops the form from actually posting
+	 }
 	 function autoRefresh(id){
 
 	     setTimeout(function(){
@@ -185,7 +212,7 @@
 	    <button type="button" id="quit-button" title="">Quit</button>
 	</div>
 	<br />
-	<div>
+	<div id="login-area">
 	    <form action="/login" method="post" id="login-form">
 		Username: 
 		<input type="text" name="username" autofocus/>
@@ -193,7 +220,7 @@
 		Password: 
 		<input type="password" name="password" id="password-field"/>
 		<br />
-		<button type="button" onClick="login()" id="login-button">Save Login</button>
+		<button type="button" onClick="login()" id="login-button">Login</button>
 		<script>
 		 $(document).ready(function(){
 		     $('#password-field').keypress(function(e){
@@ -206,17 +233,13 @@
 		     $.ajax({
 			 url:'/login',
 			 type:'post',
-			 data:$('#login-form').serialize(),
-			 success:function(){
-			     sleep(20);
-			     window.location.reload(false);
-			 }
+			 data:$('#login-form').serialize()
 		     });
-		     autoRefresh('slot-1');
-		     autoRefresh('slot-2');
-		     autoRefresh('slot-3');
-		     autoRefresh('slot-4');
-		     autoRefresh('slot-5');
+		     /* autoRefresh('slot-1');
+			autoRefresh('slot-2');
+			autoRefresh('slot-3');
+			autoRefresh('slot-4');
+			autoRefresh('slot-5');*/
 		 }
 
 		</script>
@@ -228,9 +251,13 @@
 		 <img src="/slot/4" id="slot-4-display" />
 		 <img src="/slot/5" id="slot-5-display" /> -->
 	</div>
+	<div id="notification-area" >
+	    <iframe src="/notification"></iframe>
+	</div>
+
 	<div id="slots">
 	    <table>
-		<form action="/slotSubmit" method="post" id="slot-submit-form">
+		<form action="/slotSubmit" method="post" id="slot-submit-form" onSubmit="addContent('slot-submit-form')">
 		    <tr>
 			<th>Slot 1</th>
 			<th>Slot 2</th>
@@ -270,7 +297,7 @@
 					    <ul>
 						{{range $mb := $value}}
 						<li>
-	      					    <input type="checkbox" id="slot-2-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot1" value="{{$mb.Id}}" id="slot-2-{{$mb.Id}}" class="slot-2-{{$value.TrimWhiteSpace $key}}-mb" /><span></span></label><label for="slot-2-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
+	      					    <input type="checkbox" id="slot-2-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot2" value="{{$mb.Id}}" id="slot-2-{{$mb.Id}}" class="slot-2-{{$value.TrimWhiteSpace $key}}-mb" /><span></span></label><label for="slot-2-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
 						</li>
 						{{end}}
 					    </ul>
@@ -290,7 +317,7 @@
 					    <ul>
 						{{range $mb := $value}}
 						<li>
-	      					    <input type="checkbox" id="slot-3-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot1" value="{{$mb.Id}}" id="slot-3-{{$mb.Id}}" class="slot-3-{{$value.TrimWhiteSpace $key}}-mb" /><span></span></label><label for="slot-3-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
+	      					    <input type="checkbox" id="slot-3-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot3" value="{{$mb.Id}}" id="slot-3-{{$mb.Id}}" class="slot-3-{{$value.TrimWhiteSpace $key}}-mb" /><span></span></label><label for="slot-3-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
 						</li>
 						{{end}}
 					    </ul>
@@ -310,7 +337,7 @@
 					    <ul>
 						{{range $mb := $value}}
 						<li>
-	      					    <input type="checkbox" id="slot-4-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot1" value="{{$mb.Id}}" id="slot-4-{{$mb.Id}}" class="slot-4-{{$value.TrimWhiteSpace $key}}-mb" /><span></span></label><label for="slot-4-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
+	      					    <input type="checkbox" id="slot-4-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot4" value="{{$mb.Id}}" id="slot-4-{{$mb.Id}}" class="slot-4-{{$value.TrimWhiteSpace $key}}-mb" /><span></span></label><label for="slot-4-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
 						</li>
 						{{end}}
 					    </ul>
@@ -330,7 +357,7 @@
 					    <ul>
 						{{range $mb := $value}}
 						<li>
-	      					    <input type="checkbox" id="slot-5-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot1" value="{{$mb.Id}}" id="slot-5-{{$mb.Id}}" class="slot-5-{{$value.TrimWhiteSpace $key}}-mb" /><span></span></label><label for="slot-5-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
+	      					    <input type="checkbox" id="slot-5-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot5" value="{{$mb.Id}}" id="slot-5-{{$mb.Id}}" class="slot-5-{{$value.TrimWhiteSpace $key}}-mb" /><span></span></label><label for="slot-5-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
 						</li>
 						{{end}}
 					    </ul>
@@ -343,7 +370,7 @@
 		    </tr>
 		    <tr style="border: none;">
 			<td style="border: none;">
-			    <button type="button" onClick="subSlotForm()">Submit Slot Choices</button>
+			    <button type="button" onClick="subSlotForm()" id="slot-submit-button">Submit Slot Choices</button>
 			    <!-- <input type="submit" value="Submit Slot Choices" /> -->
 			</td>
 			<td style="border: none;">

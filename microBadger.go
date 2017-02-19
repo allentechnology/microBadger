@@ -37,6 +37,17 @@ var (
 	client           *http.Client
 )
 
+type notification []string
+
+func (n *notification) notify(message string) {
+	currentTime := time.Now().Format("2006-01-02 15:04:05 ")
+	*n = append(*n, currentTime+": "+message)
+}
+
+var (
+	notifications = make(notification, 10)
+)
+
 var (
 	loginReady = make(chan bool)
 )
@@ -103,12 +114,11 @@ func main() {
 		// 	client = logIntoBGG()
 		// }
 
-		fmt.Print(time.Now().Format("2006-01-02 15:04:05 "))
-		fmt.Print("Attempting to randomize badges: ")
+		notifications.notify("Attempting to randomize badges: ")
 		err := getMicroBadges(client)
 		if err != nil {
-			fmt.Println("Failed")
-			fmt.Println(err.Error())
+			notifications.notify("Failed")
+			notifications.notify(err.Error())
 			time.Sleep(10 * time.Second)
 			continue
 		}
@@ -124,7 +134,7 @@ func randomizeBadges() {
 	for i, v := range badgeList {
 		err = assignSlot(v.Id, fmt.Sprintf("%d", i+1), client)
 		if err != nil {
-			// fmt.Println("Error assigning slot ", i+1, ": ", err.Error())
+			//			fmt.Println("Error assigning slot ", i+1, ": ", err.Error())
 			updateSuccess[i] = false
 			//	loggedIn = false
 		} else {
@@ -132,21 +142,20 @@ func randomizeBadges() {
 		}
 
 	}
-	fmt.Println()
-	fmt.Print("Slots ")
+	updateMessage := "Slots "
 	slotUpdated := false
 	for i, v := range updateSuccess {
 		if v {
-			fmt.Printf("%d ", i+1)
+			updateMessage += fmt.Sprintf("%d ", i+1)
 			slotUpdated = true
 		}
 	}
 	if slotUpdated {
-		fmt.Println("updated successfully")
+		updateMessage += "updated successfully"
 	} else {
-		fmt.Println("not updated")
+		updateMessage += "not updated"
 	}
-
+	notifications.notify(updateMessage)
 }
 
 func webServer() {
@@ -157,15 +166,39 @@ func webServer() {
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/setInterval", setIntervalHandler)
 	http.HandleFunc("/randomize", randomizeHandler)
+	http.HandleFunc("/notification", notificationHandler)
 	//	http.HandleFunc("/test", testHandler)
-	serverErr := http.ListenAndServe(":6060", nil)
+	serverErr := http.ListenAndServe("localhost:6060", nil)
 
 	if serverErr != nil {
 		os.Exit(0)
 	}
 
 }
+func notificationHandler(w http.ResponseWriter, r *http.Request) {
+	notificationPage := `
+<html>
+<head>
+<meta http-equiv="refresh" content="5" />
+</head>
+<body>
+{{range .}}
+{{.}}</br></br>
+{{end}}
+</body>
+</html>
+`
+	tmpl, err := template.New("").Parse(notificationPage)
 
+	if err != nil {
+		fmt.Fprintf(w, "error: "+err.Error())
+	}
+	err = tmpl.Execute(w, notifications)
+	if err != nil {
+		fmt.Fprintf(w, "error: "+err.Error())
+	}
+
+}
 func randomizeHandler(w http.ResponseWriter, r *http.Request) {
 	randomizeBadges()
 }
@@ -215,6 +248,7 @@ func slotSubmitHandler(w http.ResponseWriter, r *http.Request) {
 			s.AvailableBadges = map[string]*microBadge{}
 			for _, v := range formSlots[slotID] {
 				if mb, ok := microBadgeMap[v]; ok {
+					mb.Selected = true
 					s.AvailableBadges[v] = mb
 				}
 			}
@@ -223,6 +257,7 @@ func slotSubmitHandler(w http.ResponseWriter, r *http.Request) {
 			slotMap[slotID] = &slot{Id: slotID, AvailableBadges: newMap}
 			for _, v := range formSlots[slotID] {
 				if mb, ok := microBadgeMap[v]; ok {
+					mb.Selected = true
 					slotMap[slotID].AvailableBadges[v] = mb
 				}
 			}
@@ -242,24 +277,19 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	*username = usernameSlice[0]
 	*password = passwordSlice[0]
 
-	for {
-		var err error
-		client, err = website.Login("https://boardgamegeek.com/login", *username, *password, 30*time.Second)
+	var err error
+	client, err = website.Login("https://boardgamegeek.com/login", *username, *password, 30*time.Second)
 
-		if err != nil {
-			fmt.Println(err.Error())
-			if err.Error() == "Login failed" {
-				fmt.Println("Exiting microBadger")
-				os.Exit(1)
-			}
-		} else {
-			break
+	if err != nil {
+		notifications.notify(err.Error())
+		if err.Error() == "Login failed" {
+			return
 		}
-		time.Sleep(10 * time.Minute)
-
+	} else {
+		notifications.notify("Login successful. Reload page")
+		loginReady <- true
 	}
 
-	loginReady <- true
 }
 
 func slotHandler(w http.ResponseWriter, r *http.Request) {

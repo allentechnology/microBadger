@@ -1,0 +1,44 @@
+{
+	"FixedFileInfo":
+	{
+		"FileVersion": {
+			"Major": 1,
+			"Minor": 0,
+			"Patch": 0,
+			"Build": 0
+		},
+		"ProductVersion": {
+			"Major": 0,
+			"Minor": 5,
+			"Patch": 0,
+			"Build": 0
+		},
+		"FileFlagsMask": "3f",
+		"FileFlags ": "00",
+		"FileOS": "040004",
+		"FileType": "01",
+		"FileSubType": "00"
+	},
+	"StringFileInfo":
+	{
+		"Comments": "",
+		"CompanyName": "Allen Technology Solutions",
+		"FileDescription": "",
+		"FileVersion": "",
+		"InternalName": "",
+		"LegalCopyright": "2017 Samuel Allen, Allen Technology Solutions",
+		"LegalTrademarks": "",
+		"OriginalFilename": "",
+		"PrivateBuild": "",
+		"ProductName": "",
+		"ProductVersion": "v0.5.0.0",
+		"SpecialBuild": ""
+	},
+	"VarFileInfo":
+	{
+		"Translation": {
+			"LangID": "0409",
+			"CharsetID": "04B0"
+		}
+	}
+}

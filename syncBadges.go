@@ -25,7 +25,13 @@ func getMicroBadges(client *http.Client) error {
 			parseMicroBadgeData(v.NextSibling.NextSibling.FirstChild)
 		}
 	}
-
+	// for k, v := range tmpMicroBadgeMap {
+	// 	if mb, ok := microBadgeMap[k]; ok {
+	// 		mb.UpdateMB(v)
+	// 	} else {
+	// 		microBadgeMap[k] = v
+	// 	}
+	// }
 	microBadgeMap = tmpMicroBadgeMap
 	categoryMap = make(map[string]mbSlice)
 	for _, v := range microBadgeMap {

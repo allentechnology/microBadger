@@ -16,6 +16,15 @@ type microBadge struct {
 	Description string
 	ImgURL      string
 	Category    string
+	Selected    bool
+}
+
+func (mb *microBadge) UpdateMB(newMB *microBadge) {
+	mb.Id = newMB.Id
+	mb.Name = newMB.Name
+	mb.Description = newMB.Description
+	mb.ImgURL = newMB.ImgURL
+	mb.Category = newMB.Category
 }
 
 func (mb *microBadge) String() string {

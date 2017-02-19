@@ -8,9 +8,11 @@ linux: *.go
 	strip binaries/microbadger_linux_*
 
 .PHONY: windows
-windows: *.go
+windows: *.go logos/microbadger.ico
+	goversioninfo -icon=logos/microbadger.ico
 	GOOS=windows GOARCH=amd64 go build -o binaries/microbadger_windows_64bit.exe
 	GOOS=windows GOARCH=386 go build -o binaries/microbadger_windows_32bit.exe
+	rm resource.syso
 
 .PHONY: windows-gui
 windows-gui: *.go
