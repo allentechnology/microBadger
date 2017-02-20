@@ -208,8 +208,10 @@
     <body>
 	<h1>MicroBadger</h1>
 	<div id="menu">
-	    <button type="button">Help</button>
-	    <button type="button" id="quit-button" title="">Quit</button>
+	    <form>
+		<!-- <button type="button">Help</button> -->
+	    <button type="submit" id="quit-button" title="Quit microBadger and stop randomizing microbadges" formaction="/quit">Quit</button>
+	    </form>
 	</div>
 	<br />
 	<div id="login-area">
@@ -220,7 +222,8 @@
 		Password: 
 		<input type="password" name="password" id="password-field"/>
 		<br />
-		<button type="button" onClick="login()" id="login-button">Login</button>
+		<!-- <button type="button" onClick="login()" id="login-button" title="Save the login information locally for future use">Save Login</button> -->
+		<button type="button" onClick="login()" id="login-button" title="Log into boardgamegeek.com and start randomizing microbadges">Login</button>
 		<script>
 		 $(document).ready(function(){
 		     $('#password-field').keypress(function(e){
@@ -305,6 +308,7 @@
 					{{end}}
 				</ul>
 			    </div>
+
 			</td>
 			<td>
 			    <div class="acidjs-css3-treeview" id="slot-3">
@@ -325,6 +329,7 @@
 					{{end}}
 				</ul>
 			    </div>
+
 			</td>
 			<td>
 			    <div class="acidjs-css3-treeview" id="slot-4">
@@ -345,6 +350,7 @@
 					{{end}}
 				</ul>
 			    </div>
+
 			</td>
 			<td>
 			    <div class="acidjs-css3-treeview" id="slot-5">
@@ -367,6 +373,7 @@
 			    </div>
 			</td>
 
+			</td>
 		    </tr>
 		    <tr style="border: none;">
 			<td style="border: none;">

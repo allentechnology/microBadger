@@ -38,6 +38,10 @@ func getMicroBadges(client *http.Client) error {
 		categoryMap[v.Category] = append(categoryMap[v.Category], v)
 	}
 
+	for _, v := range categoryMap {
+		mbSort(v)
+	}
+
 	return nil
 }
 
