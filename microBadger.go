@@ -45,7 +45,7 @@ func (n *notification) notify(message string) {
 }
 
 var (
-	notifications = make(notification, 10)
+	notifications = make(notification, 1)
 )
 
 var (
@@ -297,7 +297,6 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		notifications.notify("Login successful. Reload page")
 		loginReady <- true
 	}
-
 
 }
 
