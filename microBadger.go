@@ -41,11 +41,11 @@ type notification []string
 
 func (n *notification) notify(message string) {
 	currentTime := time.Now().Format("2006-01-02 15:04:05 ")
-	*n = append(*n, currentTime+": "+message)
+	*n = append(notification{currentTime + ": " + message}, *n...)
 }
 
 var (
-	notifications = make(notification, 1)
+	notifications = make(notification, 0)
 )
 
 var (
