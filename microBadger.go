@@ -231,8 +231,8 @@ func setIntervalHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseFiles("webpage.html")
-
+	//	tmpl, err := template.ParseFiles("webpage.html")
+	tmpl, err := template.New("").Parse(webpage)
 	if err != nil {
 		fmt.Fprintf(w, "error: "+err.Error())
 	}

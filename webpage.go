@@ -1,3 +1,5 @@
+package main
+var webpage=`
 <html>
     <head>
 	<title>MicroBadger</title>
@@ -515,5 +517,4 @@
 	<a href="http://allentechnology.solutions">allentechnology.solutions</a>
     </footer>
 </html>
-
-
+`
