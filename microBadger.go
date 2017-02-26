@@ -168,7 +168,8 @@ func webServer() {
 	http.HandleFunc("/randomize", randomizeHandler)
 	http.HandleFunc("/notification", notificationHandler)
 	http.HandleFunc("/quit", quitHandler)
-	//	http.HandleFunc("/test", testHandler)
+	http.HandleFunc("/test", testHandler)
+	http.HandleFunc("/header", headerHandler)
 	serverErr := http.ListenAndServe("localhost:6060", nil)
 
 	if serverErr != nil {
@@ -212,8 +213,18 @@ func randomizeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func testHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("in test handler")
-	fmt.Fprintln(w, "in test handler")
+	data, err := Asset("logos/microBadger_headert.png")
+	if err != nil {
+		fmt.Fprintf(w, "logo not found")
+	}
+	w.Write(data)
+}
+
+func headerHandler(w http.ResponseWriter, r *http.Request) {
+	header, err := Asset("logos/microBadger_headert.png")
+	if err == nil {
+		w.Write(header)
+	}
 }
 
 func setIntervalHandler(w http.ResponseWriter, r *http.Request) {
@@ -232,6 +243,11 @@ func setIntervalHandler(w http.ResponseWriter, r *http.Request) {
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	//	tmpl, err := template.ParseFiles("webpage.html")
+	// logo, err := Asset("logos/microBadger_headert.png")
+	// if err == nil {
+	// 	w.Write(logo)
+	// }
+
 	tmpl, err := template.New("").Parse(webpage)
 	if err != nil {
 		fmt.Fprintf(w, "error: "+err.Error())
@@ -256,7 +272,7 @@ func slotSubmitHandler(w http.ResponseWriter, r *http.Request) {
 			s.AvailableBadges = map[string]*microBadge{}
 			for _, v := range formSlots[slotID] {
 				if mb, ok := microBadgeMap[v]; ok {
-					mb.Selected = true
+					mb.Selected[i] = true
 					s.AvailableBadges[v] = mb
 				}
 			}
@@ -265,7 +281,7 @@ func slotSubmitHandler(w http.ResponseWriter, r *http.Request) {
 			slotMap[slotID] = &slot{Id: slotID, AvailableBadges: newMap}
 			for _, v := range formSlots[slotID] {
 				if mb, ok := microBadgeMap[v]; ok {
-					mb.Selected = true
+					mb.Selected[i] = true
 					slotMap[slotID].AvailableBadges[v] = mb
 				}
 			}

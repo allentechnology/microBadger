@@ -17,7 +17,7 @@ type microBadge struct {
 	Description string
 	ImgURL      string
 	Category    string
-	Selected    bool
+	Selected    []bool
 }
 
 func (mb *microBadge) UpdateMB(newMB *microBadge) {

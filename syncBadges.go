@@ -70,7 +70,7 @@ func getBadgesInCategory(category string, node *html.Node) {
 			if existingMB, ok := tmpMicroBadgeMap[mb]; ok {
 				existingMB.Category = category
 			} else {
-				tmpMicroBadgeMap[mb] = &microBadge{Id: mb, Category: category}
+				tmpMicroBadgeMap[mb] = &microBadge{Id: mb, Category: category, Selected: make([]bool, 5)}
 			}
 		}
 	}
@@ -89,7 +89,7 @@ func getBadgesInCategory(category string, node *html.Node) {
 				if existingMB, ok := tmpMicroBadgeMap[mb]; ok {
 					existingMB.ImgURL = imgLink
 				} else {
-					tmpMicroBadgeMap[mb] = &microBadge{Id: mb, ImgURL: imgLink, Category: category}
+					tmpMicroBadgeMap[mb] = &microBadge{Id: mb, ImgURL: imgLink, Category: category, Selected: make([]bool, 5)}
 				}
 			case "onmouseover":
 				mbDescription := v.Val
@@ -104,7 +104,7 @@ func getBadgesInCategory(category string, node *html.Node) {
 					if existingMB, ok := tmpMicroBadgeMap[mb]; ok {
 						existingMB.Description = mbDescription
 					} else {
-						tmpMicroBadgeMap[mb] = &microBadge{Id: mb, Name: mbDescription}
+						tmpMicroBadgeMap[mb] = &microBadge{Id: mb, Name: mbDescription, Selected: make([]bool, 5)}
 					}
 
 				}

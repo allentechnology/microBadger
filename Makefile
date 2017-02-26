@@ -10,8 +10,8 @@ linux: *.go
 .PHONY: windows
 windows: *.go
 	goversioninfo -icon=logos/microbadger.ico
-	GOOS=windows GOARCH=386  go build -ldflags -H=windowsgui -o binaries/microbadger_windows-gui_32bit.exe
-	GOOS=windows GOARCH=amd64  go build -ldflags -H=windowsgui -o binaries/microbadger_windows-gui_64bit.exe
+	GOOS=windows GOARCH=386  go build -ldflags -H=windowsgui -o binaries/microbadger_windows_32bit.exe
+	GOOS=windows GOARCH=amd64  go build -ldflags -H=windowsgui -o binaries/microbadger_windows_64bit.exe
 	rm resource.syso
 
 .PHONY: osx
