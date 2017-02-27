@@ -276,10 +276,10 @@ var webpage = `
 			    <div class="acidjs-css3-treeview" id="slot-1">
 				<ul>
 				    <li>
-	      				<input type="checkbox" checked="checked" id="slot-1-select-all-arrow"/><label><input type="checkbox" id="slot-1-select-all" onChange="checkSubBoxes('slot-1-select-all','slot-1-category')"/><span></span></label><label for="slot-1-select-all-arrow"><b>Select All</b></label> 
+	      				<input type="checkbox" checked="checked" id="slot-1-select-all-arrow"/><label><input type="checkbox" id="slot-1-select-all" onChange="checkSubBoxes('slot-1-select-all','slot-1-category')"/><span></span></label><label for="slot-1-select-all-arrow"><b>Select All ({{itemSum .}})</b></label> 
 					{{range $key,$value := .}} 
 					<ul>
-	      				    <input type="checkbox" id="slot-1-{{.TrimWhiteSpace $key}}-arrow" checked="checked" /><label><input type="checkbox" id="slot-1-{{.TrimWhiteSpace $key}}" class="slot-1-category" onChange="checkSubBoxes('slot-1-{{.TrimWhiteSpace $key}}','slot-1-{{.TrimWhiteSpace $key}}-mb')"/><span></span></label><label for="slot-1-{{.TrimWhiteSpace $key}}-arrow"><b>{{$key}}</b></label>
+	      				    <input type="checkbox" id="slot-1-{{.TrimWhiteSpace $key}}-arrow" checked="checked" /><label><input type="checkbox" id="slot-1-{{.TrimWhiteSpace $key}}" class="slot-1-category" onChange="checkSubBoxes('slot-1-{{.TrimWhiteSpace $key}}','slot-1-{{.TrimWhiteSpace $key}}-mb')"/><span></span></label><label for="slot-1-{{.TrimWhiteSpace $key}}-arrow"><b>{{$key}} ({{len $value}})</b></label>
 					    <ul>
 						{{range $mb := $value}}
 						<li>
@@ -296,10 +296,10 @@ var webpage = `
 			    <div class="acidjs-css3-treeview" id="slot-2">
 				<ul>
 				    <li>
-	      				<input type="checkbox" checked="checked" id="slot-2-select-all-arrow"/><label><input type="checkbox" id="slot-2-select-all" onChange="checkSubBoxes('slot-2-select-all','slot-2-category')"/><span></span></label><label for="slot-2-select-all-arrow"><b>Select All</b></label> 
+	      				<input type="checkbox" checked="checked" id="slot-2-select-all-arrow"/><label><input type="checkbox" id="slot-2-select-all" onChange="checkSubBoxes('slot-2-select-all','slot-2-category')"/><span></span></label><label for="slot-2-select-all-arrow"><b>Select All ({{itemSum .}})</b></label> 
 					{{range $key,$value := .}} 
 					<ul>
-	      				    <input type="checkbox" id="slot-2-{{.TrimWhiteSpace $key}}-arrow" checked="checked" /><label><input type="checkbox" id="slot-2-{{.TrimWhiteSpace $key}}" class="slot-2-category" onChange="checkSubBoxes('slot-2-{{.TrimWhiteSpace $key}}','slot-2-{{.TrimWhiteSpace $key}}-mb')"/><span></span></label><label for="slot-2-{{.TrimWhiteSpace $key}}-arrow"><b>{{$key}}</b></label>
+	      				    <input type="checkbox" id="slot-2-{{.TrimWhiteSpace $key}}-arrow" checked="checked" /><label><input type="checkbox" id="slot-2-{{.TrimWhiteSpace $key}}" class="slot-2-category" onChange="checkSubBoxes('slot-2-{{.TrimWhiteSpace $key}}','slot-2-{{.TrimWhiteSpace $key}}-mb')"/><span></span></label><label for="slot-2-{{.TrimWhiteSpace $key}}-arrow"><b>{{$key}} ({{len $value}})</b></label>
 					    <ul>
 						{{range $mb := $value}}
 						<li>
@@ -317,10 +317,10 @@ var webpage = `
 			    <div class="acidjs-css3-treeview" id="slot-3">
 				<ul>
 				    <li>
-	      				<input type="checkbox" checked="checked" id="slot-3-select-all-arrow"/><label><input type="checkbox" id="slot-3-select-all" onChange="checkSubBoxes('slot-3-select-all','slot-3-category')"/><span></span></label><label for="slot-3-select-all-arrow"><b>Select All</b></label> 
+	      				<input type="checkbox" checked="checked" id="slot-3-select-all-arrow"/><label><input type="checkbox" id="slot-3-select-all" onChange="checkSubBoxes('slot-3-select-all','slot-3-category')"/><span></span></label><label for="slot-3-select-all-arrow"><b>Select All ({{itemSum .}})</b></label> 
 					{{range $key,$value := .}} 
 					<ul>
-	      				    <input type="checkbox" id="slot-3-{{.TrimWhiteSpace $key}}-arrow" checked="checked" /><label><input type="checkbox" id="slot-3-{{.TrimWhiteSpace $key}}" class="slot-3-category" onChange="checkSubBoxes('slot-3-{{.TrimWhiteSpace $key}}','slot-3-{{.TrimWhiteSpace $key}}-mb')"/><span></span></label><label for="slot-3-{{.TrimWhiteSpace $key}}-arrow"><b>{{$key}}</b></label>
+	      				    <input type="checkbox" id="slot-3-{{.TrimWhiteSpace $key}}-arrow" checked="checked" /><label><input type="checkbox" id="slot-3-{{.TrimWhiteSpace $key}}" class="slot-3-category" onChange="checkSubBoxes('slot-3-{{.TrimWhiteSpace $key}}','slot-3-{{.TrimWhiteSpace $key}}-mb')"/><span></span></label><label for="slot-3-{{.TrimWhiteSpace $key}}-arrow"><b>{{$key}} ({{len $value}})</b></label>
 					    <ul>
 						{{range $mb := $value}}
 						<li>
@@ -338,10 +338,10 @@ var webpage = `
 			    <div class="acidjs-css3-treeview" id="slot-4">
 				<ul>
 				    <li>
-	      				<input type="checkbox" checked="checked" id="slot-4-select-all-arrow"/><label><input type="checkbox" id="slot-4-select-all" onChange="checkSubBoxes('slot-4-select-all','slot-4-category')"/><span></span></label><label for="slot-4-select-all-arrow"><b>Select All</b></label> 
+	      				<input type="checkbox" checked="checked" id="slot-4-select-all-arrow"/><label><input type="checkbox" id="slot-4-select-all" onChange="checkSubBoxes('slot-4-select-all','slot-4-category')"/><span></span></label><label for="slot-4-select-all-arrow"><b>Select All ({{itemSum .}})</b></label> 
 					{{range $key,$value := .}} 
 					<ul>
-	      				    <input type="checkbox" id="slot-4-{{.TrimWhiteSpace $key}}-arrow" checked="checked" /><label><input type="checkbox" id="slot-4-{{.TrimWhiteSpace $key}}" class="slot-4-category" onChange="checkSubBoxes('slot-4-{{.TrimWhiteSpace $key}}','slot-4-{{.TrimWhiteSpace $key}}-mb')"/><span></span></label><label for="slot-4-{{.TrimWhiteSpace $key}}-arrow"><b>{{$key}}</b></label>
+	      				    <input type="checkbox" id="slot-4-{{.TrimWhiteSpace $key}}-arrow" checked="checked" /><label><input type="checkbox" id="slot-4-{{.TrimWhiteSpace $key}}" class="slot-4-category" onChange="checkSubBoxes('slot-4-{{.TrimWhiteSpace $key}}','slot-4-{{.TrimWhiteSpace $key}}-mb')"/><span></span></label><label for="slot-4-{{.TrimWhiteSpace $key}}-arrow"><b>{{$key}} ({{len $value}})</b></label>
 					    <ul>
 						{{range $mb := $value}}
 						<li>
@@ -359,10 +359,10 @@ var webpage = `
 			    <div class="acidjs-css3-treeview" id="slot-5">
 				<ul>
 				    <li>
-	      				<input type="checkbox" checked="checked" id="slot-5-select-all-arrow"/><label><input type="checkbox" id="slot-5-select-all" onChange="checkSubBoxes('slot-5-select-all','slot-5-category')"/><span></span></label><label for="slot-5-select-all-arrow"><b>Select All</b></label> 
+	      				<input type="checkbox" checked="checked" id="slot-5-select-all-arrow"/><label><input type="checkbox" id="slot-5-select-all" onChange="checkSubBoxes('slot-5-select-all','slot-5-category')"/><span></span></label><label for="slot-5-select-all-arrow"><b>Select All ({{itemSum .}})</b></label> 
 					{{range $key,$value := .}} 
 					<ul>
-	      				    <input type="checkbox" id="slot-5-{{.TrimWhiteSpace $key}}-arrow" checked="checked" /><label><input type="checkbox" id="slot-5-{{.TrimWhiteSpace $key}}" class="slot-5-category" onChange="checkSubBoxes('slot-5-{{.TrimWhiteSpace $key}}','slot-5-{{.TrimWhiteSpace $key}}-mb')"/><span></span></label><label for="slot-5-{{.TrimWhiteSpace $key}}-arrow"><b>{{$key}}</b></label>
+	      				    <input type="checkbox" id="slot-5-{{.TrimWhiteSpace $key}}-arrow" checked="checked" /><label><input type="checkbox" id="slot-5-{{.TrimWhiteSpace $key}}" class="slot-5-category" onChange="checkSubBoxes('slot-5-{{.TrimWhiteSpace $key}}','slot-5-{{.TrimWhiteSpace $key}}-mb')"/><span></span></label><label for="slot-5-{{.TrimWhiteSpace $key}}-arrow"><b>{{$key}} ({{len $value}})</b></label>
 					    <ul>
 						{{range $mb := $value}}
 						<li>

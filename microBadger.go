@@ -29,6 +29,16 @@ func (m mbSlice) TrimWhiteSpace(text string) string {
 	return newString
 }
 
+var funcMap = template.FuncMap{
+	"itemSum": func(m map[string]mbSlice) int {
+		sum := 0
+		for _, v := range m {
+			sum += len(v)
+		}
+		return sum
+	},
+}
+
 var (
 	slotMap          = map[string]*slot{}
 	categoryMap      = map[string]mbSlice{}
@@ -248,7 +258,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 	// 	w.Write(logo)
 	// }
 
-	tmpl, err := template.New("").Parse(webpage)
+	tmpl, err := template.New("").Funcs(funcMap).Parse(webpage)
 	if err != nil {
 		fmt.Fprintf(w, "error: "+err.Error())
 	}
