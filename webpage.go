@@ -283,7 +283,7 @@ var webpage = `
 					    <ul>
 						{{range $mb := $value}}
 						<li>
-	      					    <input type="checkbox" id="slot-1-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot1" value="{{$mb.Id}}" id="slot-1-{{$mb.Id}}" class="slot-1-{{$value.TrimWhiteSpace $key}}-mb" {{range $index,$slotSelected := $mb.Selected}}  {{if eq $index 1}} {{if $slotSelected}}checked{{end}} {{end}}  {{end}}/><span></span></label><label for="slot-1-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
+	      					    <input type="checkbox" id="slot-1-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot1" value="{{$mb.Id}}" id="slot-1-{{$mb.Id}}" class="slot-1-{{$value.TrimWhiteSpace $key}}-mb" {{range $index,$slotSelected := $mb.Selected}}  {{if eq $index 0}} {{if $slotSelected}}checked{{end}} {{end}}  {{end}}/><span></span></label><label for="slot-1-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
 						</li>
 						{{end}}
 					    </ul>
@@ -303,7 +303,7 @@ var webpage = `
 					    <ul>
 						{{range $mb := $value}}
 						<li>
-	      					    <input type="checkbox" id="slot-2-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot2" value="{{$mb.Id}}" id="slot-2-{{$mb.Id}}" class="slot-2-{{$value.TrimWhiteSpace $key}}-mb" {{range $index,$slotSelected := $mb.Selected}}  {{if eq $index 2}} {{if $slotSelected}}checked{{end}} {{end}}  {{end}}/><span></span></label><label for="slot-2-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
+	      					    <input type="checkbox" id="slot-2-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot2" value="{{$mb.Id}}" id="slot-2-{{$mb.Id}}" class="slot-2-{{$value.TrimWhiteSpace $key}}-mb" {{range $index,$slotSelected := $mb.Selected}}  {{if eq $index 1}} {{if $slotSelected}}checked{{end}} {{end}}  {{end}}/><span></span></label><label for="slot-2-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
 						</li>
 						{{end}}
 					    </ul>
@@ -324,7 +324,7 @@ var webpage = `
 					    <ul>
 						{{range $mb := $value}}
 						<li>
-	      					    <input type="checkbox" id="slot-3-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot3" value="{{$mb.Id}}" id="slot-3-{{$mb.Id}}" class="slot-3-{{$value.TrimWhiteSpace $key}}-mb" {{range $index,$slotSelected := $mb.Selected}}  {{if eq $index 3}} {{if $slotSelected}}checked{{end}} {{end}}  {{end}}/><span></span></label><label for="slot-3-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
+	      					    <input type="checkbox" id="slot-3-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot3" value="{{$mb.Id}}" id="slot-3-{{$mb.Id}}" class="slot-3-{{$value.TrimWhiteSpace $key}}-mb" {{range $index,$slotSelected := $mb.Selected}}  {{if eq $index 2}} {{if $slotSelected}}checked{{end}} {{end}}  {{end}}/><span></span></label><label for="slot-3-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
 						</li>
 						{{end}}
 					    </ul>
@@ -345,7 +345,7 @@ var webpage = `
 					    <ul>
 						{{range $mb := $value}}
 						<li>
-	      					    <input type="checkbox" id="slot-4-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot4" value="{{$mb.Id}}" id="slot-4-{{$mb.Id}}" class="slot-4-{{$value.TrimWhiteSpace $key}}-mb" {{range $index,$slotSelected := $mb.Selected}}  {{if eq $index 4}} {{if $slotSelected}}checked{{end}} {{end}}  {{end}}/><span></span></label><label for="slot-4-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
+	      					    <input type="checkbox" id="slot-4-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot4" value="{{$mb.Id}}" id="slot-4-{{$mb.Id}}" class="slot-4-{{$value.TrimWhiteSpace $key}}-mb" {{range $index,$slotSelected := $mb.Selected}}  {{if eq $index 3}} {{if $slotSelected}}checked{{end}} {{end}}  {{end}}/><span></span></label><label for="slot-4-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
 						</li>
 						{{end}}
 					    </ul>
@@ -366,7 +366,7 @@ var webpage = `
 					    <ul>
 						{{range $mb := $value}}
 						<li>
-	      					    <input type="checkbox" id="slot-5-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot5" value="{{$mb.Id}}" id="slot-5-{{$mb.Id}}" class="slot-5-{{$value.TrimWhiteSpace $key}}-mb" {{range $index,$slotSelected := $mb.Selected}}  {{if eq $index 5}} {{if $slotSelected}}checked{{end}} {{end}}  {{end}}/><span></span></label><label for="slot-5-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
+	      					    <input type="checkbox" id="slot-5-{{$mb.Id}}-arrow"  checked="checked" /><label><input type="checkbox" name="slot5" value="{{$mb.Id}}" id="slot-5-{{$mb.Id}}" class="slot-5-{{$value.TrimWhiteSpace $key}}-mb" {{range $index,$slotSelected := $mb.Selected}}  {{if eq $index 4}} {{if $slotSelected}}checked{{end}} {{end}}  {{end}}/><span></span></label><label for="slot-5-{{$mb.Id}}-arrow"><img src="{{if $mb.ImgURL}} {{$mb.ImgURL}} {{else}} https://yhs.apsva.us/wp-content/uploads/legacy_assets/yhs/032bde3c5d-status_gray.png {{end}}" /> {{$mb.Description}}</label>
 						</li>
 						{{end}}
 					    </ul>

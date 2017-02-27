@@ -266,13 +266,20 @@ func slotSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	formSlots["3"] = r.Form["slot3"]
 	formSlots["4"] = r.Form["slot4"]
 	formSlots["5"] = r.Form["slot5"]
+	mbSelectedMap := make(map[string][]bool)
 	for i := 1; i < 6; i++ {
 		slotID := fmt.Sprintf("%d", i)
 		if s, ok := slotMap[slotID]; ok {
 			s.AvailableBadges = map[string]*microBadge{}
 			for _, v := range formSlots[slotID] {
 				if mb, ok := microBadgeMap[v]; ok {
-					mb.Selected[i] = true
+					if mbSelected, ok := mbSelectedMap[v]; ok {
+						mbSelected[i-1] = true
+					} else {
+						mbSelectedMap[v] = make([]bool, 5)
+						mbSelectedMap[v][i-1] = true
+					}
+					//					mb.Selected[i] = true
 					s.AvailableBadges[v] = mb
 				}
 			}
@@ -281,11 +288,28 @@ func slotSubmitHandler(w http.ResponseWriter, r *http.Request) {
 			slotMap[slotID] = &slot{Id: slotID, AvailableBadges: newMap}
 			for _, v := range formSlots[slotID] {
 				if mb, ok := microBadgeMap[v]; ok {
-					mb.Selected[i] = true
+					if mbSelected, ok := mbSelectedMap[v]; ok {
+						mbSelected[i-1] = true
+					} else {
+						mbSelectedMap[v] = make([]bool, 5)
+						mbSelectedMap[v][i-1] = true
+					}
+					// mb.Selected[i] = true
 					slotMap[slotID].AvailableBadges[v] = mb
 				}
 			}
 
+		}
+	}
+	for key, mb := range microBadgeMap {
+		if mbSelected, ok := mbSelectedMap[key]; ok {
+			for i, sel := range mbSelected {
+				mb.Selected[i] = sel
+			}
+		} else {
+			for i, _ := range mb.Selected {
+				mb.Selected[i] = false
+			}
 		}
 	}
 }
