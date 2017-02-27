@@ -352,8 +352,10 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 func slotHandler(w http.ResponseWriter, r *http.Request) {
 	slotNumber := r.URL.Path[6:]
-	if mb, ok := microBadgeMap[slotMap[string(slotNumber)].AssignedBadge]; ok {
-		fmt.Fprintf(w, "<html><head><meta http-equiv='refresh' content='0; url=http:%s' /></head></html>", mb.ImgURL)
+	if _, ok := slotMap[string(slotNumber)]; ok {
+		if mb, ok := microBadgeMap[slotMap[string(slotNumber)].AssignedBadge]; ok {
+			fmt.Fprintf(w, "<html><head><meta http-equiv='refresh' content='0; url=http:%s' /></head></html>", mb.ImgURL)
+		}
 	}
 
 }

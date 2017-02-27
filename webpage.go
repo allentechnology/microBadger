@@ -212,7 +212,6 @@ var webpage = `
         <img src="/header" style="width:415px; height:185" />
 	<div id="menu">
 	    <form>
-		<!-- <button type="button">Help</button> -->
 	    <button type="submit" id="quit-button" title="Quit microBadger and stop randomizing microbadges" formaction="/quit">Quit</button>
 	    </form>
 	</div>
@@ -251,11 +250,12 @@ var webpage = `
 		</script>
 		<!-- <input type="submit" value="Save Login" /> -->
 	    </form>
-<!--	     <img src="/slot/1" id="slot-1-display" />
-		 <img src="/slot/2" id="slot-2-display" />
-		 <img src="/slot/3" id="slot-3-display" />
-		 <img src="/slot/4" id="slot-4-display" />
-		 <img src="/slot/5" id="slot-5-display" /> -->
+		 <iframe src="/slot/1" id="slot-1-display" style="width:16px;height:16px" frameBorder="0"></iframe>
+		 <iframe src="/slot/2" id="slot-2-display" style="width:16px;height:16px" frameBorder="0"></iframe>
+		 <iframe src="/slot/3" id="slot-3-display" style="width:16px;height:16px" frameBorder="0"></iframe>
+		 <iframe src="/slot/4" id="slot-4-display" style="width:16px;height:16px" frameBorder="0"></iframe>
+		 <iframe src="/slot/5" id="slot-5-display" style="width:16px;height:16px" frameBorder="0"></iframe>
+
 	</div>
 	<div id="notification-area" >
 	    <iframe src="/notification"></iframe>
