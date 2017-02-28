@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -14,6 +15,7 @@ import (
 	"os"
 	"os/exec"
 	"os/user"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
@@ -59,7 +61,8 @@ var (
 )
 
 var (
-	loginReady = make(chan bool)
+	loginReady        = make(chan bool)
+	usingSelectedFile = make(chan bool, 1)
 )
 
 var (
@@ -83,9 +86,13 @@ func init() {
 	runtimeOS = runtime.GOOS
 	switch runtime.GOOS {
 	case "linux", "darwin":
-		appDir = currentUser.HomeDir + ".microBadger"
+		appDir = filepath.Join(currentUser.HomeDir, "/.microBadger")
 	case "windows":
-		appDir = currentUser.HomeDir + "microBadger"
+		appDir = filepath.Join(currentUser.HomeDir, "/microBadger")
+	}
+	err = os.MkdirAll(appDir, os.ModePerm)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 
@@ -95,10 +102,40 @@ func main() {
 		fmt.Println(VERSION)
 		os.Exit(0)
 	}
+	for {
 
+		fileName := filepath.Join(appDir, "selected.mb")
+		if _, err := os.Stat(fileName); err == nil {
+			usingSelectedFile <- true
+			inFile, err := os.Open(fileName)
+			if err != nil {
+				notifications.notify("Error opening file: " + err.Error())
+				<-usingSelectedFile
+				break
+			}
+			defer inFile.Close()
+			selectedBytes, err := ioutil.ReadAll(inFile)
+			if err != nil {
+				notifications.notify("Error reading file: " + err.Error())
+				<-usingSelectedFile
+				break
+			}
+			err = json.Unmarshal(selectedBytes, &microBadgeMap)
+			if err != nil {
+				notifications.notify("Error in file format: " + err.Error())
+				<-usingSelectedFile
+				break
+			}
+			<-usingSelectedFile
+
+		}
+		break
+	}
+	categoryMap = getCategories()
 	go webServer()
 
 	var err error
+
 	switch runtimeOS {
 	case "linux":
 		err = exec.Command("xdg-open", "http://localhost:6060/").Start()
@@ -311,17 +348,39 @@ func slotSubmitHandler(w http.ResponseWriter, r *http.Request) {
 
 		}
 	}
+
+	selectedMicroBadges := make(map[string]*microBadge)
+
 	for key, mb := range microBadgeMap {
 		if mbSelected, ok := mbSelectedMap[key]; ok {
 			for i, sel := range mbSelected {
 				mb.Selected[i] = sel
 			}
+			selectedMicroBadges[mb.Id] = mb
 		} else {
 			for i, _ := range mb.Selected {
 				mb.Selected[i] = false
 			}
 		}
 	}
+
+	usingSelectedFile <- true
+	fileName := "selected.mb"
+	toWritetoFile, err := json.Marshal(selectedMicroBadges)
+	if err != nil {
+		notifications.notify("Error opening file: " + err.Error())
+		<-usingSelectedFile
+		return
+	}
+	outFile, err := os.Create(filepath.Join(appDir, fileName))
+	if err != nil {
+		notifications.notify("Error saving selections to file: " + err.Error())
+		<-usingSelectedFile
+		return
+	}
+	defer outFile.Close()
+	outFile.Write(toWritetoFile)
+	<-usingSelectedFile
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {

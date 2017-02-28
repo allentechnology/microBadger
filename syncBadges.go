@@ -33,16 +33,20 @@ func getMicroBadges(client *http.Client) error {
 	// 	}
 	// }
 	microBadgeMap = tmpMicroBadgeMap
-	categoryMap = make(map[string]mbSlice)
+	categoryMap = getCategories()
+	return nil
+}
+
+func getCategories() map[string]mbSlice {
+	tmpCategoryMap := make(map[string]mbSlice)
 	for _, v := range microBadgeMap {
-		categoryMap[v.Category] = append(categoryMap[v.Category], v)
+		tmpCategoryMap[v.Category] = append(tmpCategoryMap[v.Category], v)
 	}
 
-	for _, v := range categoryMap {
+	for _, v := range tmpCategoryMap {
 		mbSort(v)
 	}
-
-	return nil
+	return tmpCategoryMap
 }
 
 func parseMicroBadgeData(node *html.Node) {
