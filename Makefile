@@ -1,14 +1,18 @@
 .PHONY: all
 all: linux windows osx
 
+.PHONY: dependencies
+dependencies:
+	go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
+
 .PHONY: linux
-linux: *.go
+linux: *.go 
 	GOOS=linux GOARCH=amd64 go build -o binaries/microbadger_linux_64bit
 	GOOS=linux GOARCH=386 go build -o binaries/microbadger_linux_32bit
 	strip binaries/microbadger_linux_*
 
 .PHONY: windows
-windows: *.go
+windows: *.go dependencies
 	goversioninfo -icon=logos/microbadger.ico
 	GOOS=windows GOARCH=386  go build -ldflags -H=windowsgui -o binaries/microbadger_windows_32bit.exe
 	GOOS=windows GOARCH=amd64  go build -ldflags -H=windowsgui -o binaries/microbadger_windows_64bit.exe
