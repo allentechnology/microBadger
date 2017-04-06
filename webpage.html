@@ -1,6 +1,3 @@
-package main
-
-var webpage = `
 <html>
     <head>
 	<title>MicroBadger</title>
@@ -154,9 +151,13 @@ var webpage = `
 	     $.ajax({
 		 url:"" + postUrl,
 		 type:'post',
+		 dataType:'html',
 		 data:$("#" + formID).serialize(),
 		 success:function(){
 		     alert("" + message);
+		 },
+		 error:function(xhr, status, error){
+		     alert("error during form submission: " + xhr.responseText);
 		 }
 	     });
 	 }
@@ -212,7 +213,7 @@ var webpage = `
         <img src="/header" style="width:415px; height:185" />
 	<div id="menu">
 	    <form>
-	    <button type="submit" id="quit-button" title="Quit microBadger and stop randomizing microbadges" formaction="/quit">Quit</button>
+		<button type="submit" id="quit-button" title="Quit microBadger and stop randomizing microbadges" formaction="/quit">Quit</button>
 	    </form>
 	</div>
 	<br />
@@ -250,11 +251,11 @@ var webpage = `
 		</script>
 		<!-- <input type="submit" value="Save Login" /> -->
 	    </form>
-		 <iframe src="/slot/1" id="slot-1-display" style="width:16px;height:16px" frameBorder="0"></iframe>
-		 <iframe src="/slot/2" id="slot-2-display" style="width:16px;height:16px" frameBorder="0"></iframe>
-		 <iframe src="/slot/3" id="slot-3-display" style="width:16px;height:16px" frameBorder="0"></iframe>
-		 <iframe src="/slot/4" id="slot-4-display" style="width:16px;height:16px" frameBorder="0"></iframe>
-		 <iframe src="/slot/5" id="slot-5-display" style="width:16px;height:16px" frameBorder="0"></iframe>
+	    <iframe src="/slot/1" id="slot-1-display" style="width:16px;height:16px" frameBorder="0"></iframe>
+	    <iframe src="/slot/2" id="slot-2-display" style="width:16px;height:16px" frameBorder="0"></iframe>
+	    <iframe src="/slot/3" id="slot-3-display" style="width:16px;height:16px" frameBorder="0"></iframe>
+	    <iframe src="/slot/4" id="slot-4-display" style="width:16px;height:16px" frameBorder="0"></iframe>
+	    <iframe src="/slot/5" id="slot-5-display" style="width:16px;height:16px" frameBorder="0"></iframe>
 
 	</div>
 	<div id="notification-area" >
@@ -383,80 +384,81 @@ var webpage = `
 			    <button type="button" onClick="subSlotForm()" id="slot-submit-button">Submit Slot Choices</button>
 			    <!-- <input type="submit" value="Submit Slot Choices" /> -->
 			</td>
-			<td style="border: none;">
-			</td>
-			 <td>
-                          <form id="save-preset">
-			     <input type="edit" name="preset-name"/>
-			     <button type="button" onClick="subForm('/savePreset', 'save-preset','Preset saved')">Save as Preset:</button> 
-                           </form>
-			     </td>
-		    </tr>
 		</form>
-		<script>
-		 function subSlotForm (){
-		     $.ajax({
-			 url:"/slotSubmit",
-			 type:'post',
-			 data:$("#slot-submit-form").serialize(),
-			 success:function(){
-			     alert("Slot choices submitted");
-			 }
-		     });
-		 }
+		
+		<td style="border: none;">
+		</td>
+		<td>
+                    <form id="save-preset" action="/savePreset">
+			<input type="edit" name="preset-name"/>
+			<button type="button" onClick="subForm('/savePreset', 'save-preset','Preset saved')">Save as Preset</button> 
+                    </form>
+		</td>
+		    </tr>
+		    <script>
+		     function subSlotForm (){
+			 $.ajax({
+			     url:"/slotSubmit",
+			     type:'post',
+			     data:$("#slot-submit-form").serialize(),
+			     success:function(){
+				 alert("Slot choices submitted");
+			     }
+			 });
+		     }
 
-		</script>
+		    </script>
 
 	    </table>
 	</div>
 
-	 <div>
-	     <table>
-	     <form>
-	     <tr>
-	     <td>
-	     <h3>Preset Slot Configurations</h3>
-	     </td>
-	     </tr>
-	     <tr>
-	     <td>
-	     <div class="acidjs-css3-treeview">
-	     <ul>
-	     <li>
-	     <input type="checkbox" id="node-0" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="node-0"><b>Select All</b></label>                  
-	     <ul>
-	     <input type="checkbox" id="node-0" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="node-0">Preset 1 </label><button type="button">Edit</button>
-	     <ul>
-	     <li>
-	     <label>badge 1</label>
-	     </li>
-	     <li>
-	     <label>badge 2</label>
-	     </li>
-	     </ul>
-	     <input type="checkbox" id="node-0" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="node-0">Preset 2 </label><button type="button">Edit</button>
-	     <ul>
-	     <li>
-	     <label>badge 3</label>
-	     </li>
-	     <li>
-	     <label>badge 4</label>
-	     </li>
-	     </ul>
+	<div>
+	    <table>
+		<form>
+		    <tr>
+			<td>
+			    <h3>Preset Slot Configurations</h3>
+			</td>
+		    </tr>
+		    <tr>
+			<td>
+			    <div class="acidjs-css3-treeview">
+				<ul>
+				    <li>
+					<input type="checkbox" id="node-0" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="node-0"><b>Select All</b></label>                  
+					<ul>
+					    <input type="checkbox" id="node-0" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="node-0">Preset 1 </label><button type="button">Edit</button>
+					    <ul>
+						<li>
+						    <label>badge 1</label>
+						</li>
+						<li>
+						    <label>badge 2</label>
+						</li>
+					    </ul>
+					    <input type="checkbox" id="node-0" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="node-0">Preset 2 </label><button type="button">Edit</button>
+					    <ul>
+						<li>
+						    <label>badge 3</label>
+						</li>
+						<li>
+						    <label>badge 4</label>
+						</li>
+					    </ul>
 
-	     </ul>
-	     </ul>
-	     </div>
-	     </td>
-	     </tr>
-	     <tr>
-	     <td style="border: none;">
-	     <input type="submit" value="Load Selected Presets" />
-	     </td>
-	     </tr>
-	     </form>
-	     </table>
-	     </div>
+					</ul>
+				</ul>
+			    </div>
+			</td>
+		    </tr>
+		    <tr>
+			<td style="border: none;">
+			    <input type="submit" value="Load Selected Presets" />
+			</td>
+		    </tr>
+		</form>
+	    </table>
+	</div>
 	<br />
 	<div>
 	    <form action="/setInterval"  method="post" id="interval-form">
@@ -511,4 +513,4 @@ var webpage = `
 	<a href="http://allentechnology.solutions">allentechnology.solutions</a>
     </footer>
 </html>
-`
+

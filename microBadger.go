@@ -73,8 +73,9 @@ var (
 )
 
 var (
-	appDir    = ""
-	runtimeOS = ""
+	appDir        = ""
+	runtimeOS     = ""
+	listenAddress = "localhost:8080"
 )
 
 func init() {
@@ -136,22 +137,23 @@ func main() {
 
 	var err error
 
+	localURL := "http://" + listenAddress
 	switch runtimeOS {
 	case "linux":
-		err = exec.Command("xdg-open", "http://localhost:6060/").Start()
+		err = exec.Command("xdg-open", localURL).Start()
 	case "darwin":
-		err = exec.Command("open", "http://localhost:6060/").Start()
+		err = exec.Command("open", localURL).Start()
 	case "windows":
-		err = exec.Command("cmd", "/C", "start", "http://localhost:6060/").Start()
+		err = exec.Command("cmd", "/C", "start", localURL).Start()
 	default:
 		err = fmt.Errorf("unsupported platform")
 		log.Fatal(err)
 	}
 	if err != nil {
-		fmt.Println("Failed to open browser. Navigate to http://localhost/ on your preferred web browser.")
+		fmt.Println("Failed to open browser. Navigate to", localURL, "on your preferred web browser.")
 	}
 	fmt.Println("MicroBadger version ", VERSION)
-	fmt.Println("To use microBadger, navigate to http://localhost:6060 in any web browser.")
+	fmt.Println("To use microBadger, navigate to", localURL, "in any web browser.")
 	<-loginReady
 
 	//	client = logIntoBGG()
@@ -218,7 +220,7 @@ func webServer() {
 	http.HandleFunc("/test", testHandler)
 	http.HandleFunc("/header", headerHandler)
 	http.HandleFunc("/savePreset", savePresetHandler)
-	serverErr := http.ListenAndServe("localhost:6060", nil)
+	serverErr := http.ListenAndServe(listenAddress, nil)
 
 	if serverErr != nil {
 		os.Exit(0)
@@ -228,8 +230,22 @@ func webServer() {
 func savePresetHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	presetName := r.Form["preset-name"]
-	fmt.Println(presetName)
-	//	writeMapToFile()
+	var err error = nil
+	if len(presetName) > 0 {
+		if len(presetName[0]) > 0 {
+			fileName := "preset-" + presetName[0] + ".mb"
+			writeMapToFile(fileName, microBadgeMap)
+		} else {
+			err = errors.New("Preset name not provided")
+		}
+	} else {
+		err = errors.New("Preset name not provided")
+	}
+
+	if err != nil {
+		//Preset name not provided
+		http.Error(w, err.Error(), http.StatusNotFound)
+	}
 }
 
 func notificationHandler(w http.ResponseWriter, r *http.Request) {
@@ -302,14 +318,18 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 	// if err == nil {
 	// 	w.Write(logo)
 	// }
-
-	tmpl, err := template.New("").Funcs(funcMap).Parse(webpage)
-	if err != nil {
-		fmt.Fprintf(w, "error: "+err.Error())
-	}
-	err = tmpl.Execute(w, categoryMap)
-	if err != nil {
-		fmt.Fprintf(w, "error: "+err.Error())
+	webpage, err := Asset("webpage.html")
+	if err == nil {
+		tmpl, err := template.New("").Funcs(funcMap).Parse(string(webpage))
+		if err != nil {
+			fmt.Fprintf(w, "error: "+err.Error())
+		}
+		err = tmpl.Execute(w, categoryMap)
+		if err != nil {
+			fmt.Fprintf(w, "error: "+err.Error())
+		}
+	} else {
+		fmt.Fprintf(w, "error loading webpage")
 	}
 }
 
@@ -356,7 +376,6 @@ func slotSubmitHandler(w http.ResponseWriter, r *http.Request) {
 
 		}
 	}
-
 	selectedMicroBadges := make(map[string]*microBadge)
 
 	for key, mb := range microBadgeMap {
