@@ -39,6 +39,23 @@ var funcMap = template.FuncMap{
 		}
 		return sum
 	},
+	"showPresets": func() []string {
+		presetFiles := make([]string, 0)
+		files, err := ioutil.ReadDir(appDir)
+		if err != nil {
+			return presetFiles
+		}
+
+		for _, v := range files {
+			if strings.Contains(v.Name(), "preset-") {
+				currentName := v.Name()
+				currentName = strings.Replace(currentName, "preset-", "", -1)
+				currentName = strings.Replace(currentName, ".mb", "", -1)
+				presetFiles = append(presetFiles, currentName)
+			}
+		}
+		return presetFiles
+	},
 }
 
 var (
@@ -284,11 +301,25 @@ func randomizeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func testHandler(w http.ResponseWriter, r *http.Request) {
-	data, err := Asset("logos/microBadger_headert.png")
+	testString := `
+<html>
+<body>
+{{range $index,$preset := showPresets}}
+{{.}}<br />
+{{end}}
+</body>
+</html>
+`
+	tmpl, err := template.New("").Funcs(funcMap).Parse(testString)
+
 	if err != nil {
-		fmt.Fprintf(w, "logo not found")
+		fmt.Fprintf(w, "error: "+err.Error())
 	}
-	w.Write(data)
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		fmt.Fprintf(w, "error: "+err.Error())
+	}
+
 }
 
 func headerHandler(w http.ResponseWriter, r *http.Request) {
