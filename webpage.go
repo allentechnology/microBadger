@@ -385,10 +385,12 @@ var webpage = `
 			</td>
 			<td style="border: none;">
 			</td>
-			<!-- <td>
-			     <button type="button">Save as Preset:</button> 
-			     <input type="edit" />
-			     </td> -->
+			 <td>
+                          <form id="save-preset">
+			     <input type="edit" name="preset-name"/>
+			     <button type="button" onClick="subForm('/savePreset', 'save-preset','Preset saved')">Save as Preset:</button> 
+                           </form>
+			     </td>
 		    </tr>
 		</form>
 		<script>
@@ -408,7 +410,7 @@ var webpage = `
 	    </table>
 	</div>
 
-	<!-- <div>
+	 <div>
 	     <table>
 	     <form>
 	     <tr>
@@ -455,7 +457,6 @@ var webpage = `
 	     </form>
 	     </table>
 	     </div>
-	   -->
 	<br />
 	<div>
 	    <form action="/setInterval"  method="post" id="interval-form">

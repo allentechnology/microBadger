@@ -217,6 +217,7 @@ func webServer() {
 	http.HandleFunc("/quit", quitHandler)
 	http.HandleFunc("/test", testHandler)
 	http.HandleFunc("/header", headerHandler)
+	http.HandleFunc("/savePreset", savePresetHandler)
 	serverErr := http.ListenAndServe("localhost:6060", nil)
 
 	if serverErr != nil {
@@ -224,6 +225,13 @@ func webServer() {
 	}
 
 }
+func savePresetHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	presetName := r.Form["preset-name"]
+	fmt.Println(presetName)
+	//	writeMapToFile()
+}
+
 func notificationHandler(w http.ResponseWriter, r *http.Request) {
 	notificationPage := `
 <html>
@@ -366,21 +374,25 @@ func slotSubmitHandler(w http.ResponseWriter, r *http.Request) {
 
 	usingSelectedFile <- true
 	fileName := "selected.mb"
-	toWritetoFile, err := json.Marshal(selectedMicroBadges)
+	writeMapToFile(fileName, selectedMicroBadges)
+	<-usingSelectedFile
+}
+
+func writeMapToFile(fileName string, givenMap interface{}) {
+
+	toWritetoFile, err := json.Marshal(givenMap)
 	if err != nil {
 		notifications.notify("Error opening file: " + err.Error())
-		<-usingSelectedFile
 		return
 	}
 	outFile, err := os.Create(filepath.Join(appDir, fileName))
 	if err != nil {
 		notifications.notify("Error saving selections to file: " + err.Error())
-		<-usingSelectedFile
 		return
 	}
 	defer outFile.Close()
 	outFile.Write(toWritetoFile)
-	<-usingSelectedFile
+
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
