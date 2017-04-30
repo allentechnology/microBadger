@@ -60,6 +60,30 @@ var funcMap = template.FuncMap{
 	"checkUpdate": func() bool {
 		return needToUpdate
 	},
+	"getLatestVersion": func() string {
+		return latestVersion
+	},
+	"getOs": func() string {
+		result := runtime.GOOS
+		if result == "darwin" {
+			return "osx"
+		}
+		return result
+	},
+	"getArch": func() string {
+		result := runtime.GOARCH
+		switch result {
+		case "386":
+			result = "32bit"
+		case "amd64":
+			result = "64bit"
+		default:
+		}
+		if runtime.GOOS == "windows" {
+			result += ".exe"
+		}
+		return result
+	},
 }
 
 var (
