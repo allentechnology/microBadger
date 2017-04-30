@@ -145,7 +145,7 @@ func main() {
 				break
 			}
 			<-usingSelectedFile
-
+			tmpMicroBadgeMap = microBadgeMap
 		}
 		break
 	}
