@@ -211,6 +211,13 @@
     </head>
     <body>
         <img src="/header" style="width:415px; height:185" />
+	{{if checkUpdate }}
+	<div id="update">
+	    <h4>New microBadger version available <a href="https://github.com/allentechnology/microBadger/releases/download/0.8.1/microbadger_linux_64bit">Download Now </a></h4>
+
+
+	</div>
+	{{end}}
 	<div id="menu">
 	    <form>
 		<button type="submit" id="quit-button" title="Quit microBadger and stop randomizing microbadges" formaction="/quit">Quit</button>

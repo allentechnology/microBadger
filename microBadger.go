@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	website "github.com/allentechnology/website"
+	"github.com/blang/semver"
 	"github.com/vharitonsky/iniflags"
 	"html/template"
 	"io/ioutil"
@@ -56,6 +57,9 @@ var funcMap = template.FuncMap{
 		}
 		return presetFiles
 	},
+	"checkUpdate": func() bool {
+		return needToUpdate
+	},
 }
 
 var (
@@ -92,6 +96,8 @@ var (
 var (
 	appDir        = ""
 	runtimeOS     = ""
+	latestVersion = ""
+	needToUpdate  = false
 	listenAddress = "localhost:8080"
 )
 
@@ -101,9 +107,13 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	latestVersion = checkForUpdates()
+	needToUpdate = compareVersions(VERSION, latestVersion)
 	runtimeOS = runtime.GOOS
 	switch runtime.GOOS {
-	case "linux", "darwin":
+	case "linux":
+		appDir = filepath.Join(currentUser.HomeDir, "/.microBadger")
+	case "darwin":
 		appDir = filepath.Join(currentUser.HomeDir, "/.microBadger")
 	case "windows":
 		appDir = filepath.Join(currentUser.HomeDir, "/microBadger")
@@ -191,6 +201,39 @@ func main() {
 		randomizeBadges()
 		time.Sleep(time.Duration(*interval) * time.Minute)
 	}
+}
+
+func compareVersions(curVer, newVer string) bool {
+	currentVersion, err := semver.Make(curVer)
+	if err != nil {
+		return false
+	}
+	newVersion, err := semver.Make(newVer)
+	if err != nil {
+		return false
+	}
+	result := currentVersion.Compare(newVersion)
+	if result < 0 {
+		return true
+	}
+	return false
+}
+
+func checkForUpdates() (newVersion string) {
+	url := "http://github.com/allentechnology/microBadger/releases/latest"
+
+	resp, err := http.Get(url)
+	if err != nil {
+		newVersion = VERSION
+	}
+
+	newVersion = getVersionFromURL(resp.Request.URL.String())
+	return
+}
+
+func getVersionFromURL(url string) string {
+	stringSlice := strings.Split(url, "/")
+	return stringSlice[len(stringSlice)-1]
 }
 
 func randomizeBadges() {
