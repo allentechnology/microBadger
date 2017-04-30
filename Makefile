@@ -7,8 +7,8 @@ windows-dependencies:
 
 .PHONY: embed-assets
 embed-assets:
-	go get github.com/jtweeuwen/go-bindata/...
-	go-bindata logos/microBadger_headrt.png ./webpage.html
+	go get github.com/jteeuwen/go-bindata/...
+	go-bindata ./logos/microBadger_headert.png ./webpage.html
 
 .PHONY: linux
 linux: *.go embed-assets
