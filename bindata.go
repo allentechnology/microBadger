@@ -104,7 +104,7 @@ func webpageHtml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "webpage.html", size: 18185, mode: os.FileMode(420), modTime: time.Unix(1493522122, 0)}
+	info := bindataFileInfo{name: "webpage.html", size: 18185, mode: os.FileMode(420), modTime: time.Unix(1493522478, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
