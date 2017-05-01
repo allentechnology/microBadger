@@ -63,6 +63,9 @@ var funcMap = template.FuncMap{
 	"getLatestVersion": func() string {
 		return latestVersion
 	},
+	"getVersion": func() string {
+		return VERSION
+	},
 	"getOs": func() string {
 		result := runtime.GOOS
 		if result == "darwin" {
