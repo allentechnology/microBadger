@@ -213,7 +213,8 @@ func main() {
 		// if !loggedIn {
 		// 	client = logIntoBGG()
 		// }
-
+		latestVersion = checkForUpdates()
+		needToUpdate = compareVersions(VERSION, latestVersion)
 		notifications.notify("Attempting to randomize badges: ")
 		err := getMicroBadges(client)
 		if err != nil {
