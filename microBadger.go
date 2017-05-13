@@ -87,6 +87,22 @@ var funcMap = template.FuncMap{
 		}
 		return result
 	},
+	"getPresets": func() []string {
+		fileList, err := ioutil.ReadDir(appDir)
+		presetList = make([]string, 0)
+		if err != nil {
+			return presetList
+		}
+		for _, file := range fileList {
+			if strings.HasPrefix(file.Name(), "preset-") {
+				presetList = append(presetList, file.Name())
+			}
+		}
+		for i, v := range presetList {
+			presetList[i] = strings.TrimPrefix(strings.TrimSuffix(v, ".mb"), "preset-")
+		}
+		return presetList
+	},
 }
 
 var (
@@ -94,6 +110,7 @@ var (
 	categoryMap      = map[string]mbSlice{}
 	microBadgeMap    = map[string]*microBadge{}
 	tmpMicroBadgeMap = map[string]*microBadge{}
+	presetList       = make([]string, 0)
 	client           *http.Client
 )
 
@@ -157,35 +174,7 @@ func main() {
 		fmt.Println(VERSION)
 		os.Exit(0)
 	}
-	for {
-
-		fileName := filepath.Join(appDir, "selected.mb")
-		if _, err := os.Stat(fileName); err == nil {
-			usingSelectedFile <- true
-			inFile, err := os.Open(fileName)
-			if err != nil {
-				notifications.notify("Error opening file: " + err.Error())
-				<-usingSelectedFile
-				break
-			}
-			defer inFile.Close()
-			selectedBytes, err := ioutil.ReadAll(inFile)
-			if err != nil {
-				notifications.notify("Error reading file: " + err.Error())
-				<-usingSelectedFile
-				break
-			}
-			err = json.Unmarshal(selectedBytes, &microBadgeMap)
-			if err != nil {
-				notifications.notify("Error in file format: " + err.Error())
-				<-usingSelectedFile
-				break
-			}
-			<-usingSelectedFile
-			tmpMicroBadgeMap = microBadgeMap
-		}
-		break
-	}
+	loadMicroBadgesFromFile("selected.mb")
 	categoryMap = getCategories()
 	go webServer()
 
@@ -231,6 +220,38 @@ func main() {
 	}
 }
 
+func loadMicroBadgesFromFile(file string) {
+	for {
+		fileName := filepath.Join(appDir, file)
+		if _, err := os.Stat(fileName); err == nil {
+			usingSelectedFile <- true
+			inFile, err := os.Open(fileName)
+			if err != nil {
+				notifications.notify("Error opening file: " + err.Error())
+				<-usingSelectedFile
+				break
+			}
+			defer inFile.Close()
+			selectedBytes, err := ioutil.ReadAll(inFile)
+			if err != nil {
+				notifications.notify("Error reading file: " + err.Error())
+				<-usingSelectedFile
+				break
+			}
+			err = json.Unmarshal(selectedBytes, &microBadgeMap)
+			if err != nil {
+				notifications.notify("Error in file format: " + err.Error())
+				<-usingSelectedFile
+				break
+			}
+			<-usingSelectedFile
+			tmpMicroBadgeMap = microBadgeMap
+		}
+		break
+	}
+	//TODO: set slotmap info here
+}
+
 func compareVersions(curVer, newVer string) bool {
 	currentVersion, err := semver.Make(curVer)
 	if err != nil {
@@ -253,6 +274,7 @@ func checkForUpdates() (newVersion string) {
 	resp, err := http.Get(url)
 	if err != nil {
 		newVersion = VERSION
+		return
 	}
 
 	newVersion = getVersionFromURL(resp.Request.URL.String())
@@ -308,6 +330,7 @@ func webServer() {
 	http.HandleFunc("/test", testHandler)
 	http.HandleFunc("/header", headerHandler)
 	http.HandleFunc("/savePreset", savePresetHandler)
+	http.HandleFunc("/loadPreset", loadPresetHandler)
 	serverErr := http.ListenAndServe(listenAddress, nil)
 
 	if serverErr != nil {
@@ -334,6 +357,30 @@ func savePresetHandler(w http.ResponseWriter, r *http.Request) {
 		//Preset name not provided
 		http.Error(w, err.Error(), http.StatusNotFound)
 	}
+}
+
+func loadPresetHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	presetNames := r.Form["preset"]
+	if len(presetNames) > 0 {
+		presetName := presetNames[0]
+		nameFound := false
+		for _, v := range presetList {
+			if presetName == v {
+				nameFound = true
+				break
+			}
+		}
+		if nameFound {
+			//load preset file
+			loadMicroBadgesFromFile(presetName)
+			//submit presets
+			//update shown microbadge list (maybe redirect response?)
+			//reply with success
+		}
+	}
+	//reply with fail
+	fmt.Fprintf(w, "something")
 }
 
 func notificationHandler(w http.ResponseWriter, r *http.Request) {

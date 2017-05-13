@@ -416,55 +416,18 @@
 
 	    </table>
 	</div>
-<!-- 
+ 
 	<div>
-	    <table>
-		<form>
-		    <tr>
-			<td>
-			    <h3>Preset Slot Configurations</h3>
-			</td>
-		    </tr>
-		    <tr>
-			<td>
-			    <div class="acidjs-css3-treeview">
-				<ul>
-				    <li>
-					<input type="checkbox" id="node-0" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="node-0"><b>Select All</b></label>                  
-					<ul>
-					    <input type="checkbox" id="node-0" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="node-0">Preset 1 </label><button type="button">Edit</button>
-					    <ul>
-						<li>
-						    <label>badge 1</label>
-						</li>
-						<li>
-						    <label>badge 2</label>
-						</li>
-					    </ul>
-					    <input type="checkbox" id="node-0" checked="checked" /><label><input type="checkbox" /><span></span></label><label for="node-0">Preset 2 </label><button type="button">Edit</button>
-					    <ul>
-						<li>
-						    <label>badge 3</label>
-						</li>
-						<li>
-						    <label>badge 4</label>
-						</li>
-					    </ul>
+	    <form action="/loadPreset">
+		<h3>Preset Slot Configurations</h3>
+		{{range $v := getPresets}}
+		<label><input type="radio" name="preset" value="{{$v}}">{{$v}}</label><br />
 
-					</ul>
-				</ul>
-			    </div>
-			</td>
-		    </tr>
-		    <tr>
-			<td style="border: none;">
-			    <input type="submit" value="Load Selected Presets" />
-			</td>
-		    </tr>
-		</form>
-	    </table>
+		{{end}}
+		<input type="submit" value="Load Selected Preset" />
+	    </form>
 	</div>
-	 -->
+
 	<br />
 	<div>
 	    <form action="/setInterval"  method="post" id="interval-form">
@@ -515,9 +478,9 @@
     <br />
     <footer>
 	microBadger version: {{getVersion}}<br />
-	Copyright (C) 2017 Samuel Allen, Allen Technology Solutions
+	© 2017 Samuel Allen, Allen Technology Solutions
 	<br />
-	<a href="http://allentechnology.solutions">allentechnology.solutions</a>
+	<a href="http://allentechnology.solutions">http://allentechnology.solutions</a>
     </footer>
 </html>
 
