@@ -238,18 +238,30 @@ func loadMicroBadgesFromFile(file string) {
 				<-usingSelectedFile
 				break
 			}
-			err = json.Unmarshal(selectedBytes, &microBadgeMap)
+			tmpMicroBadgeMap = map[string]*microBadge{}
+			microBadgeMap = map[string]*microBadge{}
+			err = json.Unmarshal(selectedBytes, &tmpMicroBadgeMap)
 			if err != nil {
 				notifications.notify("Error in file format: " + err.Error())
 				<-usingSelectedFile
 				break
 			}
 			<-usingSelectedFile
-			tmpMicroBadgeMap = microBadgeMap
+			microBadgeMap = tmpMicroBadgeMap
 		}
 		break
 	}
-	//TODO: set slotmap info here
+	availableSlots := make(map[string][]string)
+	for _, v := range microBadgeMap {
+
+		for i, sel := range v.Selected {
+			index := fmt.Sprintf("%d", i+1)
+			if sel {
+				availableSlots[index] = append(availableSlots[index], v.Id)
+			}
+		}
+	}
+	submitCheckedMicroBadges(availableSlots)
 }
 
 func compareVersions(curVer, newVer string) bool {
@@ -373,14 +385,15 @@ func loadPresetHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		if nameFound {
 			//load preset file
-			loadMicroBadgesFromFile(presetName)
+			loadMicroBadgesFromFile("preset-" + presetName + ".mb")
 			//submit presets
 			//update shown microbadge list (maybe redirect response?)
 			//reply with success
+			http.Redirect(w, r, "http://"+listenAddress, http.StatusSeeOther)
+			return
 		}
 	}
-	//reply with fail
-	fmt.Fprintf(w, "something")
+	http.Error(w, "The requested preset does not exist", http.StatusNotFound)
 }
 
 func notificationHandler(w http.ResponseWriter, r *http.Request) {
@@ -490,6 +503,10 @@ func slotSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	formSlots["3"] = r.Form["slot3"]
 	formSlots["4"] = r.Form["slot4"]
 	formSlots["5"] = r.Form["slot5"]
+	submitCheckedMicroBadges(formSlots)
+}
+
+func submitCheckedMicroBadges(formSlots map[string][]string) {
 	mbSelectedMap := make(map[string][]bool)
 	for i := 1; i < 6; i++ {
 		slotID := fmt.Sprintf("%d", i)
