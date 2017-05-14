@@ -621,6 +621,16 @@ func getRandomBadges() []microBadge {
 		slotID := fmt.Sprintf("%d", i)
 		if currentSlot, ok := slotMap[slotID]; ok {
 			for _, mb := range currentSlot.AvailableBadges {
+				mbAlreadyUsed := false
+				for _, v := range badgeList {
+					if v.Id == mb.Id {
+						mbAlreadyUsed = true
+						break
+					}
+				}
+				if mbAlreadyUsed {
+					continue
+				}
 				badgeList = append(badgeList, *mb)
 				break
 			}
