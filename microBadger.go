@@ -637,35 +637,49 @@ func getRandomBadges() []microBadge {
 	for i := 1; i < 6; i++ {
 		slotID := fmt.Sprintf("%d", i)
 		if currentSlot, ok := slotMap[slotID]; ok {
-			for _, mb := range currentSlot.AvailableBadges {
-				mbAlreadyUsed := false
-				for _, v := range badgeList {
-					if v.Id == mb.Id {
-						mbAlreadyUsed = true
-						break
+			if len(currentSlot.AvailableBadges) > 0 {
+				for _, mb := range currentSlot.AvailableBadges {
+					mbAlreadyUsed := false
+					for _, v := range badgeList {
+						if v.Id == mb.Id {
+							mbAlreadyUsed = true
+							break
+						}
 					}
+					if mbAlreadyUsed {
+						continue
+					}
+					badgeList = append(badgeList, *mb)
+					break
 				}
-				if mbAlreadyUsed {
-					continue
-				}
-				badgeList = append(badgeList, *mb)
-				break
+			} else {
+				badgeList = append(badgeList, microBadge{Id: ""})
 			}
 		} /*else {
 			badgeList = append(badgeList, microBadge{})
 		}*/
 	}
-
 	return badgeList
 }
 
 func assignSlot(id, slotNumber string, client *http.Client) error {
-	resp, err := client.PostForm("https://boardgamegeek.com/geekmicrobadge.php", url.Values{
-		"badgeid": {id},
-		"slot":    {slotNumber},
-		"ajax":    {"1"},
-		"action":  {"setslot"},
-	})
+	var err error
+	var resp *http.Response
+	if id == "" {
+		resp, err = client.PostForm("https://boardgamegeek.com/geekmicrobadge.php", url.Values{
+			"slot":   {slotNumber},
+			"ajax":   {"1"},
+			"action": {"clearslot"},
+		})
+
+	} else {
+		resp, err = client.PostForm("https://boardgamegeek.com/geekmicrobadge.php", url.Values{
+			"badgeid": {id},
+			"slot":    {slotNumber},
+			"ajax":    {"1"},
+			"action":  {"setslot"},
+		})
+	}
 	if err != nil {
 		return err
 	}
