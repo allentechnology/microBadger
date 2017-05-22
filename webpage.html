@@ -11,8 +11,21 @@
 	 }
 	 table {
 	     width: 100%;
+	     table-layout: fixed;
 	 }
+	 td,th {
+	     width: 100%;
+	 }
+	 tr {
+	     overflow-x:scroll;
 
+	 }
+	 #preset-list{
+	     max-height:300px;
+	     width: 20%;
+	     overflow-y:scroll;
+	     border: 1px solid gray;
+	 }
 	 .acidjs-css3-treeview{
 	     overflow-y:scroll;
 	     wite-space: nowrap;
@@ -154,7 +167,10 @@
 		 dataType:'html',
 		 data:$("#" + formID).serialize(),
 		 success:function(){
-		     alert("" + message);
+		     $.get(
+			 "/notify",
+			 {notification : ""+message},
+		     );
 		 },
 		 error:function(xhr, status, error){
 		     alert("error during form submission: " + xhr.responseText);
@@ -407,7 +423,10 @@
 			     type:'post',
 			     data:$("#slot-submit-form").serialize(),
 			     success:function(){
-				 alert("Slot choices submitted");
+				 $.ajax({
+				     url:"/notify?notification=Slot+choices+submitted",
+				     type:'get'
+				 });
 			     }
 			 });
 		     }
@@ -416,15 +435,20 @@
 
 	    </table>
 	</div>
- 
-	<div>
+	
+	<div id="load-presets">
 	    <form action="/loadPreset">
 		<h3>Preset Slot Configurations</h3>
-		{{range $v := getPresets}}
-		<label><input type="radio" name="preset" value="{{$v}}">{{$v}}</label><br />
+		<div id="preset-list" >
+		    {{range $v := getPresets}}
+		    <label><input type="checkbox" name="preset" value="{{$v}}">{{$v}}</label><br />
 
-		{{end}}
-		<input type="submit" value="Load Selected Preset" />
+		    {{end}}
+		</div>
+		<br />
+		<div>
+		    <input type="submit" value="Load Selected Presets" />
+		</div>
 	    </form>
 	</div>
 
@@ -442,7 +466,10 @@
 		     type:'post',
 		     data:$("#interval-form").serialize(),
 		     success:function(){
-			 alert("Interval set");
+			 $.ajax({
+			     url:"/notify?notification=Interval+set",
+			     type:'get'
+			 });
 		     }
 		 });
 	     }
@@ -461,7 +488,10 @@
 		     type:'post',
 		     data:$("#random-form").serialize(),
 		     success:function(){
-			 alert("Randomizing microbadges now");
+			 $.ajax({
+			     url:"/notify?notification=Randomizing+microbadges+now",
+			     type:'get'
+			 });
 		     }
 		 });
 	     }

@@ -111,12 +111,16 @@ var (
 	microBadgeMap    = map[string]*microBadge{}
 	tmpMicroBadgeMap = map[string]*microBadge{}
 	presetList       = make([]string, 0)
+	presetChan       = make(chan bool)
 	client           *http.Client
 )
 
 type notification []string
 
 func (n *notification) notify(message string) {
+	if len(notifications) > 50 {
+		notifications = notifications[:len(notifications)-1]
+	}
 	currentTime := time.Now().Format("2006-01-02 15:04:05 ")
 	*n = append(notification{currentTime + ": " + message}, *n...)
 }
@@ -166,6 +170,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	go cyclePresets([]string{})
 }
 
 func main() {
@@ -329,6 +334,27 @@ func randomizeBadges() {
 	notifications.notify(updateMessage)
 }
 
+func cyclePresets(selectedPresets []string) {
+	if len(selectedPresets) < 1 {
+		<-presetChan
+
+	} else {
+		for {
+			for _, v := range selectedPresets {
+				select {
+				case <-presetChan:
+					return
+				default:
+					notifications.notify("loading " + v + " preset")
+					loadMicroBadgesFromFile("preset-" + v + ".mb")
+
+				}
+				time.Sleep(time.Duration(*interval)*time.Minute + time.Second)
+			}
+		}
+	}
+}
+
 func webServer() {
 	//Web server here
 	http.HandleFunc("/", rootHandler)
@@ -343,6 +369,7 @@ func webServer() {
 	http.HandleFunc("/header", headerHandler)
 	http.HandleFunc("/savePreset", savePresetHandler)
 	http.HandleFunc("/loadPreset", loadPresetHandler)
+	http.HandleFunc("/notify", notifyHandler)
 	serverErr := http.ListenAndServe(listenAddress, nil)
 
 	if serverErr != nil {
@@ -350,6 +377,16 @@ func webServer() {
 	}
 
 }
+
+func notifyHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	currentNotification := r.Form["notification"]
+	for _, v := range currentNotification {
+		notifications.notify(v)
+	}
+	http.Redirect(w, r, "http://"+listenAddress, http.StatusSeeOther)
+}
+
 func savePresetHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	presetName := r.Form["preset-name"]
@@ -374,25 +411,22 @@ func savePresetHandler(w http.ResponseWriter, r *http.Request) {
 func loadPresetHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	presetNames := r.Form["preset"]
-	if len(presetNames) > 0 {
-		presetName := presetNames[0]
-		nameFound := false
-		for _, v := range presetList {
-			if presetName == v {
-				nameFound = true
-				break
+	requestedPresets := make([]string, 0)
+	for _, v := range presetNames {
+		currentPreset := v
+		for _, validPreset := range presetList {
+			if currentPreset == validPreset {
+				requestedPresets = append(requestedPresets, currentPreset)
 			}
 		}
-		if nameFound {
-			//load preset file
-			loadMicroBadgesFromFile("preset-" + presetName + ".mb")
-			//submit presets
-			//update shown microbadge list (maybe redirect response?)
-			//reply with success
-			http.Redirect(w, r, "http://"+listenAddress, http.StatusSeeOther)
-			return
-		}
 	}
+	if len(requestedPresets) > 0 {
+		presetChan <- true
+		go cyclePresets(requestedPresets)
+		http.Redirect(w, r, "http://"+listenAddress, http.StatusSeeOther)
+		return
+	}
+
 	http.Error(w, "The requested preset does not exist", http.StatusNotFound)
 }
 
